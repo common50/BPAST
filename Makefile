@@ -2,7 +2,7 @@ CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Iinclude
 LDFLAGS = -lglfw -lGL -ldl
 
-SRC = main.cpp src/glad.c
+SRC = src/main.cpp src/glad.c
 OUT = BPAST
 
 $(OUT): $(SRC)
