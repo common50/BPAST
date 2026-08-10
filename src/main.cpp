@@ -14,10 +14,10 @@
 // verticies n stuff
 // 3 pos and 3 color values for each n every lil vertex
 float vertices[] = {
-    -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+    -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f,
      0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
      0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
-    -0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f
+    -0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f
 };
 
 // indecies n stuff
