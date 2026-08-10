@@ -75,6 +75,15 @@ unsigned int createMeowProgram() {
     glShaderSource(meowtexShader, 1, &vertexShaderSource, nullptr);
     glCompileShader(meowtexShader);
 
+    // err handling part
+    int meowsess;  
+    char meowinfo[512];
+    glGetShaderiv(meowtexShader, GL_COMPILE_STATUS, &meowsess);
+    if (!meowsess) {
+        glGetShaderInfoLog(meowtexShader, 512, nullptr, meowinfo);
+        std::cerr << "vertex shader blew up bro: " << meowinfo << std::endl;
+    }
+
     // fragment part
     unsigned int meowmentShader = glCreateShader(GL_FRAGMENT_SHADER); // meowwwww
     glShaderSource(meowmentShader, 1, &fragmentShaderSource, nullptr);
@@ -138,6 +147,30 @@ void cleanupcrew(unsigned int VAO, unsigned int VBO, unsigned int shaderProgram,
     glDeleteProgram(shaderProgram);
     glfwTerminate();
 }
+
+
+
+
+// lets pollute my code
+
+// i remember when i first actually started doing error handling
+// i thought i was doing it correctly but i just put something dumb like 
+// "if (!window) return -1;" and i thought that was good enough
+// then i started thinking hmm wait i dont actually know exactly WHERE the error was
+// so i also started putting a print statement saying "glfwInit lowkey failed" or "window creation got messed up"
+// and i thought that was good enough
+
+// we all know it was not
+
+// i only started realising this after a having lot of errors and thinking to myself:
+// "so i know its broken here but i dont know WHY"
+// and then i discovered that i could actually make it say what the error was
+// like in line 83 with meowinfo
+// (line 83 in as of this commit, might change in the future if i add more stuff)
+// and i thought to myself: "wow this is actually really useful"
+// and thats how we got here
+
+
 
 
 int main() {
