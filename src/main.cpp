@@ -75,7 +75,7 @@ unsigned int createMeowProgram() {
     glShaderSource(meowtexShader, 1, &vertexShaderSource, nullptr);
     glCompileShader(meowtexShader);
 
-    // err handling part
+    // err handling part 1
     int meowsess;  
     char meowinfo[512];
     glGetShaderiv(meowtexShader, GL_COMPILE_STATUS, &meowsess);
@@ -89,11 +89,25 @@ unsigned int createMeowProgram() {
     glShaderSource(meowmentShader, 1, &fragmentShaderSource, nullptr);
     glCompileShader(meowmentShader);
 
+    // err handling part 2 (omg so excited)
+    glGetShaderiv(meowmentShader, GL_COMPILE_STATUS, &meowsess);
+    if (!meowsess) {
+        glGetShaderInfoLog(meowmentShader, 512, nullptr, meowinfo);
+        std::cerr << "fragment shader blew up bro: " << meowinfo << std::endl;
+    }
+
     // program part
     unsigned int meowProgram = glCreateProgram(); // meowwwww
     glAttachShader(meowProgram, meowtexShader);
     glAttachShader(meowProgram, meowmentShader);
     glLinkProgram(meowProgram);
+
+    // err handling part 3 (last part i promise)
+    glGetProgramiv(meowProgram, GL_LINK_STATUS, &meowsess);
+    if (!meowsess) {
+        glGetProgramInfoLog(meowProgram, 512, nullptr, meowinfo);
+        std::cerr << "program linking blew up bro: " << meowinfo << std::endl;
+    }
 
     // cleanup part
     glDeleteShader(meowtexShader);
