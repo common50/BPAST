@@ -16,7 +16,15 @@
 float vertices[] = {
     -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
      0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-     0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f
+     0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
+    -0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 1.0f
+};
+
+// indecies n stuff
+// so basically saying draw the triangles like *this*
+unsigned int indices[] = {
+    0, 1, 2,
+    2, 3, 0
 };
 
 // shader source strings or wtv its called im still not sure how it works
@@ -125,22 +133,27 @@ unsigned int createMeowProgram() {
 
 
 // mess with gpu buffers and vertex arrays
-void GPUseless(unsigned int& VAO, unsigned int& VBO) {
-    // VAO n VBO part
+void GPUseless(unsigned int& VAO, unsigned int& VBO, unsigned int& EBO) {
+    // VAO n VBO n EBO part
     // was gonna name em sum stupid like meowVAO n meowVBO 
     // but maybe not they seem too important to be named like that
     glGenVertexArrays(1, &VAO); // 1 vao pls
     glGenBuffers(1, &VBO); // 1 vbo pls
+    glGenBuffers(1, &EBO); // 1 ebo pls
 
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+
 }
 
 
@@ -152,7 +165,7 @@ void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO) 
 
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -164,9 +177,10 @@ void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO) 
 
 
 // "free my boy ram he aint do nun"
-void cleanupcrew(unsigned int VAO, unsigned int VBO, unsigned int shaderProgram, GLFWwindow* window) {
+void cleanupcrew(unsigned int VAO, unsigned int VBO, unsigned int EBO, unsigned int shaderProgram, GLFWwindow* window) {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
     glDeleteProgram(shaderProgram);
     glfwTerminate();
 }
@@ -202,18 +216,19 @@ int main() {
 
     unsigned int shaderProgram = createMeowProgram();
 
-    unsigned int VAO, VBO;
-    GPUseless(VAO, VBO);
+    unsigned int VAO, VBO, EBO;
+    GPUseless(VAO, VBO, EBO);
 
     // versioj check cus ppl tend to mess version stuff up and i alwaus need to fix it for them
     std::cout << "current version " << glGetString(GL_VERSION) << std::endl;
 
     loopsoup(window, shaderProgram, VAO);
 
-    cleanupcrew(VAO, VBO, shaderProgram, window);
+    cleanupcrew(VAO, VBO, EBO, shaderProgram, window);
     return 0;
 }
 
 // notes 2 self ignore this pls its embarrassing lowk
 // k so vertex = points in 3d space n fragment = color
 // vao n vbo = gpu memory stuff
+// ebo holds indecies
