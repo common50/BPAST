@@ -3,6 +3,9 @@
 
 // 2 lines for functions else ill go insane
 
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -12,12 +15,13 @@
 // clutter comment slop just for you because i have nothing better to do and some ppl like it
 
 // verticies n stuff
-// 3 pos and 3 color values for each n every lil vertex
+// 3 pos, 3 color and 2 texcoord values for each n every lil vertex
 float vertices[] = {
-    -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f,
-     0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-     0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
-    -0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f
+//  pos                   color               texcoord
+    -0.5f, -0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 0.0f,
+     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
+     0.5f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   1.0f, 1.0f,
+    -0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   0.0f, 1.0f
 };
 
 // indecies n stuff
@@ -33,10 +37,13 @@ const char* vertexShaderSource = R"(
 #version 330 core
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aColor;
+layout (location = 2) in vec2 aTexCoord;
 out vec3 meowtexColor;
+out vec2 meowtexCoord;
 void main() {
     gl_Position = vec4(aPos, 1.0);
     meowtexColor = aColor;
+    meowtexCoord = aTexCoord;
 }
 )";
 
@@ -44,10 +51,11 @@ void main() {
 const char* fragmentShaderSource = R"(
 #version 330 core
 in vec3 meowtexColor;
+in vec2 meowtexCoord;
 out vec4 FragColor;
+uniform sampler2D meowtex;
 void main() {
-    FragColor = vec4(meowtexColor, 1.0);
-
+    FragColor = texture(meowtex, meowtexCoord);
 }
 )";
 
@@ -131,10 +139,46 @@ unsigned int createMeowProgram() {
     return meowProgram;
 }
 
+// texture loading and binding and yknow whatever other stuff related to textures
+// idk what to name stuff
+unsigned int textureThing(const char* path) {
+    unsigned int meowxture; // meowwwww
+    glGenTextures(1, &meowxture);
+    glBindTexture(GL_TEXTURE_2D, meowxture);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    int width, height, nrChannels; // i couldnt come up with anything :( same with path btw
+    unsigned char* meowta = stbi_load(path, &width, &height, &nrChannels, 0);
+
+    if (meowta) {
+
+        GLenum format;
+        if (nrChannels == 4) {
+            format = GL_RGBA;
+        } else{
+            format = GL_RGB;
+        }
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, meowta);
+        // couldnt have done that witout param 6
+        glGenerateMipmap(GL_TEXTURE_2D); // its so easy
+    } else {
+        std::cerr << "texture loading isnt loading" << path << std::endl; // only thing yall are getting is the path 4 now
+    }
+    stbi_image_free(meowta); // else my ram is gonna get caught leaking
+
+    return meowxture;
+}
+
+
 
 // mess with gpu buffers and vertex arrays
 void GPUseless(unsigned int& VAO, unsigned int& VBO, unsigned int& EBO) {
-    // VAO n VBO n EBO part
+    // VAO n VBO n EBO part and some texture stuff too i guess
     // was gonna name em sum stupid like meowVAO n meowVBO 
     // but maybe not they seem too important to be named like that
     glGenVertexArrays(1, &VAO); // 1 vao pls
@@ -148,21 +192,24 @@ void GPUseless(unsigned int& VAO, unsigned int& VBO, unsigned int& EBO) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 }
 
 
 // main loop for rendering and stuff
-void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO) {
+void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO, unsigned int meowxture) {
     while (!glfwWindowShouldClose(window)) { // who named this dawg
         glClearColor(0.15f, 0.15f, 0.25f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        glBindTexture(GL_TEXTURE_2D, meowxture);
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -219,10 +266,12 @@ int main() {
     unsigned int VAO, VBO, EBO;
     GPUseless(VAO, VBO, EBO);
 
+    unsigned int meowxture = textureThing("assets/textures/lavatory.jpg");
+
     // versioj check cus ppl tend to mess version stuff up and i alwaus need to fix it for them
     std::cout << "current version " << glGetString(GL_VERSION) << std::endl;
 
-    loopsoup(window, shaderProgram, VAO);
+    loopsoup(window, shaderProgram, VAO , meowxture);
 
     cleanupcrew(VAO, VBO, EBO, shaderProgram, window);
     return 0;
