@@ -8,6 +8,9 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
 
@@ -40,8 +43,9 @@ layout (location = 1) in vec3 aColor;
 layout (location = 2) in vec2 aTexCoord;
 out vec3 meowtexColor;
 out vec2 meowtexCoord;
+uniform mat4 meowform;
 void main() {
-    gl_Position = vec4(aPos, 1.0);
+    gl_Position = meowform * vec4(aPos, 1.0);
     meowtexColor = aColor;
     meowtexCoord = aTexCoord;
 }
@@ -213,6 +217,13 @@ void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO, 
 
         glBindTexture(GL_TEXTURE_2D, meowxture);
         glUseProgram(shaderProgram);
+
+        glm::mat4 meowform = glm::mat4(1.0f);
+        meowform = glm::rotate(meowform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+
+        int meowformLoc = glGetUniformLocation(shaderProgram, "meowform");
+        glUniformMatrix4fv(meowformLoc, 1, GL_FALSE, glm::value_ptr(meowform));
+
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
