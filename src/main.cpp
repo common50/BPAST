@@ -70,6 +70,99 @@ void main() {
 )";
 
 
+
+
+
+// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX global vars n straight bars XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+// i always keep it neat with the global vars cus i like to know where they are and what they do
+// else ill mess up, seriously, i dont know what my problem is but when i have messy globals
+
+// functions n stuff can be all over the place idc i can handle that
+// but dont mess with my global vars
+
+    // camera stuff ----------------------------------------
+    glm::vec3 meowmeraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+    glm::vec3 meowmeraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+    glm::vec3 meowmeraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+    float myaw = -90.0f; 
+    float meowch = 0.0f; // (yaw n pitch for the record im just bored and this is a good way to pass time)
+
+
+
+    // mouse stuff -----------------------------------------
+    float lastXmeowse = 400.0f, lastYmeowse = 300.0f; 
+    bool firstmeowse = true; // was told to add this
+
+
+
+    // frame timing stuff ---------------------------------
+    float deltaTime = 0.0f;
+    float lastFrame = 0.0f; // couldnt come up with some corny name so just left it like this
+
+
+
+    // window stuff ---------------------------------------
+    int windowWidth = 800;
+    int windowHeight = 600; // too important for dumb names
+
+// """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+
+
+
+// mouse stuff
+void chasingMice(GLFWwindow* window, double xposIN, double yposIN) {
+
+    // pos
+    float meowx = static_cast<float>(xposIN); // because apparently c style casting gets you a lot of flak
+    float meowy = static_cast<float>(yposIN);
+
+    if (firstmeowse) {
+        lastXmeowse = meowx;
+        lastYmeowse = meowy;
+        firstmeowse = false;
+    }
+
+    float meoffsetX = meowx - lastXmeowse;
+    float meoffsetY = lastYmeowse - meowy; // flipped cus coords go from top to bottom
+
+    lastXmeowse = meowx;
+    lastYmeowse = meowy;
+
+    float nonsense = 0.1f; // sensitivity for the record
+
+    meoffsetX *= nonsense;
+    meoffsetY *= nonsense;    
+
+    myaw += meoffsetX;
+    meowch += meoffsetY;
+
+    // i almost forgot to clamp
+    if (meowch > 89.0f) meowch = 89.0f;
+    if (meowch < -89.0f) meowch = -89.0f;
+
+    // lowkey kinda copied the spherical coordinate math from somewhere but who cares
+    // cus there is NO WAY im deriving this myself lol
+    glm::vec3 meowection;
+    meowection.x = cos(glm::radians(myaw)) * cos(glm::radians(meowch));
+    meowection.y = sin(glm::radians(meowch));
+    meowection.z = sin(glm::radians(myaw)) * cos(glm::radians(meowch));
+
+    // also almost forgot abt normalization
+    meowmeraFront = glm::normalize(meowection);
+}
+
+// resize fix thing dont worry skip over this
+void huh(GLFWwindow* window, int realmeowidth, int realmeowght) { // meowwwww
+    glViewport(0, 0, realmeowidth, realmeowght);
+    windowWidth = realmeowidth;
+    windowHeight = realmeowght;
+}
+
+
 // make window and context and stuff
 GLFWwindow* makeMyWindowsComeTrue() {
     if (!glfwInit()) {
@@ -90,6 +183,11 @@ GLFWwindow* makeMyWindowsComeTrue() {
     }
 
     glfwMakeContextCurrent(window);
+
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetCursorPosCallback(window, chasingMice);
+
+    glfwSetFramebufferSizeCallback(window, huh); // resize fix, ignore ts
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cerr << "gladLoadGLLoader failed, do better next time i dont hav all day" << std::endl;
@@ -212,7 +310,6 @@ void GPUseless(unsigned int& VAO, unsigned int& VBO, unsigned int& EBO) {
     glEnableVertexAttribArray(1);
 }
 
-
 // main loop for rendering and stuff
 void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO) {
     while (!glfwWindowShouldClose(window)) { // who named this dawg
@@ -228,7 +325,7 @@ void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO) 
         glm::mat4 miew = glm::mat4(1.0f);
         miew = glm::translate(miew, glm::vec3(0.0f, 0.0f, -3.0f));
 
-        glm::mat4 meowjection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+        glm::mat4 meowjection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
 
         int meowdelLoc = glGetUniformLocation(shaderProgram, "meowdel");
         int miewLoc = glGetUniformLocation(shaderProgram, "miew");
