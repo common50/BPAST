@@ -21,17 +21,26 @@
 // 3 pos, 3 color and 2 texcoord values for each n every lil vertex
 float vertices[] = {
 //  pos                   color               texcoord
-    -0.5f, -0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 0.0f,
-     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
-     0.5f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   1.0f, 1.0f,
-    -0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   0.0f, 1.0f
+    -0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f,
+    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.0f,
+    -0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 0.0f
 };
 
 // indecies n stuff
 // so basically saying draw the triangles like *this*
 unsigned int indices[] = {
-    0, 1, 2,
-    2, 3, 0
+    0, 1, 2,  2, 3, 0,
+    4, 5, 6,  6, 7, 4,
+    4, 0, 3,  3, 7, 4,
+    1, 5, 6,  6, 2, 1,
+    3, 2, 6,  6, 7, 3,
+    4, 5, 1,  1, 0, 4
+
 };
 
 // shader source strings or wtv its called im still not sure how it works
@@ -40,14 +49,13 @@ const char* vertexShaderSource = R"(
 #version 330 core
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aColor;
-layout (location = 2) in vec2 aTexCoord;
 out vec3 meowtexColor;
-out vec2 meowtexCoord;
-uniform mat4 meowform;
+uniform mat4 meowdel;
+uniform mat4 miew;
+uniform mat4 meowjection;
 void main() {
-    gl_Position = meowform * vec4(aPos, 1.0);
+    gl_Position = meowjection * miew * meowdel * vec4(aPos, 1.0);
     meowtexColor = aColor;
-    meowtexCoord = aTexCoord;
 }
 )";
 
@@ -55,11 +63,9 @@ void main() {
 const char* fragmentShaderSource = R"(
 #version 330 core
 in vec3 meowtexColor;
-in vec2 meowtexCoord;
 out vec4 FragColor;
-uniform sampler2D meowtex;
 void main() {
-    FragColor = texture(meowtex, meowtexCoord);
+    FragColor = vec4(meowtexColor, 1.0);
 }
 )";
 
@@ -89,6 +95,8 @@ GLFWwindow* makeMyWindowsComeTrue() {
         std::cerr << "gladLoadGLLoader failed, do better next time i dont hav all day" << std::endl;
         return nullptr;
     }
+
+    glEnable(GL_DEPTH_TEST);
 
     return window;
 }
@@ -162,7 +170,6 @@ unsigned int textureThing(const char* path) {
     unsigned char* meowta = stbi_load(path, &width, &height, &nrChannels, 0);
 
     if (meowta) {
-
         GLenum format;
         if (nrChannels == 4) {
             format = GL_RGBA;
@@ -198,34 +205,41 @@ void GPUseless(unsigned int& VAO, unsigned int& VBO, unsigned int& EBO) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
 }
 
 
 // main loop for rendering and stuff
-void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO, unsigned int meowxture) {
+void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO) {
     while (!glfwWindowShouldClose(window)) { // who named this dawg
         glClearColor(0.15f, 0.15f, 0.25f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glBindTexture(GL_TEXTURE_2D, meowxture);
         glUseProgram(shaderProgram);
 
-        glm::mat4 meowform = glm::mat4(1.0f);
-        meowform = glm::rotate(meowform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+        glm::mat4 meowdel = glm::mat4(1.0f);
 
-        int meowformLoc = glGetUniformLocation(shaderProgram, "meowform");
-        glUniformMatrix4fv(meowformLoc, 1, GL_FALSE, glm::value_ptr(meowform));
+        meowdel = glm::rotate(meowdel, (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
+
+        glm::mat4 miew = glm::mat4(1.0f);
+        miew = glm::translate(miew, glm::vec3(0.0f, 0.0f, -3.0f));
+
+        glm::mat4 meowjection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+
+        int meowdelLoc = glGetUniformLocation(shaderProgram, "meowdel");
+        int miewLoc = glGetUniformLocation(shaderProgram, "miew");
+        int meowjectionLoc = glGetUniformLocation(shaderProgram, "meowjection");
+
+        glUniformMatrix4fv(meowdelLoc, 1, GL_FALSE, glm::value_ptr(meowdel));
+        glUniformMatrix4fv(miewLoc, 1, GL_FALSE, glm::value_ptr(miew));
+        glUniformMatrix4fv(meowjectionLoc, 1, GL_FALSE, glm::value_ptr(meowjection));
 
         glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -279,12 +293,10 @@ int main() {
     unsigned int VAO, VBO, EBO;
     GPUseless(VAO, VBO, EBO);
 
-    unsigned int meowxture = textureThing("assets/textures/lavatory.jpg");
-
     // versioj check cus ppl tend to mess version stuff up and i alwaus need to fix it for them
     std::cout << "current version " << glGetString(GL_VERSION) << std::endl;
 
-    loopsoup(window, shaderProgram, VAO , meowxture);
+    loopsoup(window, shaderProgram, VAO);
 
     cleanupcrew(VAO, VBO, EBO, shaderProgram, window);
     return 0;
