@@ -17,7 +17,13 @@
 
 // clutter comment slop just for you because i have nothing better to do and some ppl like it
 
-// verticies n stuff
+
+
+
+
+// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX verticies n stuff XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+// spinning colored cube thing object whatever it is
 // 3 pos, 3 color and 2 texcoord values for each n every lil vertex
 float vertices[] = {
 //  pos                   color               texcoord
@@ -42,6 +48,26 @@ unsigned int indices[] = {
     4, 5, 1,  1, 0, 4
 
 };
+
+// floor n sky
+float meowndVertices[] = {
+    //   pos                     color
+    -10.0f, -1.0f, -10.0f,   0.2f, 0.2f, 0.25f,
+     10.0f, -1.0f, -10.0f,   0.2f, 0.2f, 0.25f,
+     10.0f, -1.0f,  10.0f,   0.2f, 0.2f, 0.25f,
+    -10.0f, -1.0f,  10.0f,   0.2f, 0.2f, 0.25f
+};
+
+unsigned int meowndIndices[] = {
+    0, 1, 2,
+    2, 3, 0
+};
+
+// """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+
+
 
 // shader source strings or wtv its called im still not sure how it works
 // vertex shader:
@@ -157,6 +183,7 @@ void chasingMice(GLFWwindow* window, double xposIN, double yposIN) {
     meowmeraFront = glm::normalize(meowection);
 }
 
+
 // resize fix thing dont worry skip over this
 void huh(GLFWwindow* window, int realmeowidth, int realmeowght) { // meowwwww
     glViewport(0, 0, realmeowidth, realmeowght);
@@ -251,6 +278,7 @@ unsigned int createMeowProgram() {
     return meowProgram;
 }
 
+
 // texture loading and binding and yknow whatever other stuff related to textures
 // idk what to name stuff
 unsigned int textureThing(const char* path) {
@@ -288,6 +316,26 @@ unsigned int textureThing(const char* path) {
 }
 
 
+// horizon thing 
+void horizonbs(unsigned int& meowndVAO, unsigned int& meowndVBO, unsigned int& meowndEBO) { // bs and buffer setup at the same time
+    glGenVertexArrays(1, &meowndVAO);
+    glGenBuffers(1, &meowndVBO);
+    glGenBuffers(1, &meowndEBO);
+
+    glBindVertexArray(meowndVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, meowndVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(meowndVertices), meowndVertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meowndEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(meowndIndices), meowndIndices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+}
+
 
 // mess with gpu buffers and vertex arrays
 void GPUseless(unsigned int& VAO, unsigned int& VBO, unsigned int& EBO) {
@@ -312,15 +360,18 @@ void GPUseless(unsigned int& VAO, unsigned int& VBO, unsigned int& EBO) {
     glEnableVertexAttribArray(1);
 }
 
+
 // main loop for rendering and stuff
-void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO) {
+void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO, unsigned int meowndVAO) {
     while (!glfwWindowShouldClose(window)) { // who named this dawg
         float purrentFrame = (float)glfwGetTime();
         deltaTime = purrentFrame - lastFrame;
         lastFrame = purrentFrame;
         
-        glClearColor(0.15f, 0.15f, 0.25f, 1.0f);
+        glClearColor(0.15f, 0.25f, 0.4f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glClear(GL_DEPTH_BUFFER_BIT);
 
         glUseProgram(shaderProgram);
 
@@ -342,6 +393,14 @@ void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO) 
 
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+        glm::mat4 meowndModel = glm::mat4(1.0f);
+
+        int meowndModelLoc = glGetUniformLocation(shaderProgram, "meowdel");
+        glUniformMatrix4fv(meowndModelLoc, 1, GL_FALSE, glm::value_ptr(meowndModel));
+
+        glBindVertexArray(meowndVAO);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -427,10 +486,13 @@ int main() {
     unsigned int VAO, VBO, EBO;
     GPUseless(VAO, VBO, EBO);
 
+    unsigned int meowndVAO, meowndVBO, meowndEBO;
+    horizonbs(meowndVAO, meowndVBO, meowndEBO);
+
     // versioj check cus ppl tend to mess version stuff up and i alwaus need to fix it for them
     std::cout << "current version " << glGetString(GL_VERSION) << std::endl;
 
-    loopsoup(window, shaderProgram, VAO);
+    loopsoup(window, shaderProgram, VAO, meowndVAO);
 
     cleanupcrew(VAO, VBO, EBO, shaderProgram, window);
     return 0;
