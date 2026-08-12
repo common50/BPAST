@@ -76,7 +76,7 @@ void main() {
 // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX global vars n straight bars XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 // i always keep it neat with the global vars cus i like to know where they are and what they do
-// else ill mess up, seriously, i dont know what my problem is but when i have messy globals
+// else ill mess up, seriously, i dont know what my problem is when i have messy globals
 
 // functions n stuff can be all over the place idc i can handle that
 // but dont mess with my global vars
@@ -94,6 +94,8 @@ void main() {
     // mouse stuff -----------------------------------------
     float lastXmeowse = 400.0f, lastYmeowse = 300.0f; 
     bool firstmeowse = true; // was told to add this
+
+    bool meowsorLocked = true;
 
 
 
@@ -313,6 +315,10 @@ void GPUseless(unsigned int& VAO, unsigned int& VBO, unsigned int& EBO) {
 // main loop for rendering and stuff
 void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO) {
     while (!glfwWindowShouldClose(window)) { // who named this dawg
+        float purrentFrame = (float)glfwGetTime();
+        deltaTime = purrentFrame - lastFrame;
+        lastFrame = purrentFrame;
+        
         glClearColor(0.15f, 0.15f, 0.25f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -322,8 +328,7 @@ void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO) 
 
         meowdel = glm::rotate(meowdel, (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
 
-        glm::mat4 miew = glm::mat4(1.0f);
-        miew = glm::translate(miew, glm::vec3(0.0f, 0.0f, -3.0f));
+        glm::mat4 miew = glm::lookAt(meowmeraPos, meowmeraPos + meowmeraFront, meowmeraUp);
 
         glm::mat4 meowjection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
 
@@ -341,8 +346,40 @@ void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO) 
         glfwSwapBuffers(window);
         glfwPollEvents();
 
-        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             glfwSetWindowShouldClose(window, true);
+        }
+
+        static bool tabWasPressed = false;
+        if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS) {
+            if (!tabWasPressed) {
+                meowsorLocked = !meowsorLocked;
+                if (meowsorLocked) {
+                    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                    firstmeowse = true;
+                } else {
+                    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                }
+            } // yay so many curly braces
+            tabWasPressed = true;
+        } else {
+            tabWasPressed = false;
+        }
+
+        float meowmeraSpeed = 2.5f * deltaTime;
+
+        // wasdwdasddwadsdsad
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+            meowmeraPos += meowmeraSpeed * meowmeraFront;
+
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+            meowmeraPos -= meowmeraSpeed * meowmeraFront;
+
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+            meowmeraPos -= glm::normalize(glm::cross(meowmeraFront, meowmeraUp)) * meowmeraSpeed;
+
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+            meowmeraPos += glm::normalize(glm::cross(meowmeraFront, meowmeraUp)) * meowmeraSpeed;
     }
 }
 
