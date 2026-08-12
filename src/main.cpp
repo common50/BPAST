@@ -318,7 +318,7 @@ unsigned int textureThing(const char* path) {
         } else if (nrChannels == 4) {
             format = GL_RGBA;
         } else {
-            std::cerr << "unexpected channel count: " << nrChannels << " for " << path << std::endl;
+            std::cerr << "woah wtf this is the amount of channels: " << nrChannels << " for " << path << std::endl;
             format = GL_RGB;
         }
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
