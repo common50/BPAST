@@ -49,13 +49,13 @@ unsigned int indices[] = {
 
 };
 
-// floor n sky
+// YOUR HORIZON IS MY GARDEN BUT WHO WATERS IT? 
 float meowndVertices[] = {
-    //   pos                     color
-    -10.0f, -1.0f, -10.0f,   0.2f, 0.2f, 0.25f,
-     10.0f, -1.0f, -10.0f,   0.2f, 0.2f, 0.25f,
-     10.0f, -1.0f,  10.0f,   0.2f, 0.2f, 0.25f,
-    -10.0f, -1.0f,  10.0f,   0.2f, 0.2f, 0.25f
+    //   pos                     color              texcoord
+    -10.0f, -1.0f, -10.0f,   0.2f, 0.2f, 0.25f,   0.0f, 1.0f,
+     10.0f, -1.0f, -10.0f,   0.2f, 0.2f, 0.25f,   1.0f, 1.0f,
+     10.0f, -1.0f,  10.0f,   0.2f, 0.2f, 0.25f,   1.0f, 0.0f,
+    -10.0f, -1.0f,  10.0f,   0.2f, 0.2f, 0.25f,   0.0f, 0.0f
 };
 
 unsigned int meowndIndices[] = {
@@ -75,13 +75,16 @@ const char* vertexShaderSource = R"(
 #version 330 core
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aColor;
+layout (location = 2) in vec2 aTexCoord;
 out vec3 meowtexColor;
+out vec2 meowtexCoord;
 uniform mat4 meowdel;
 uniform mat4 miew;
 uniform mat4 meowjection;
 void main() {
     gl_Position = meowjection * miew * meowdel * vec4(aPos, 1.0);
     meowtexColor = aColor;
+    meowtexCoord = aTexCoord;
 }
 )";
 
@@ -89,9 +92,16 @@ void main() {
 const char* fragmentShaderSource = R"(
 #version 330 core
 in vec3 meowtexColor;
+in vec2 meowtexCoord;
 out vec4 FragColor;
+uniform sampler2D meowtex;
+uniform bool huhTexture;
 void main() {
-    FragColor = vec4(meowtexColor, 1.0);
+    if (huhTexture) {
+        FragColor = texture(meowtex, meowtexCoord);
+    } else {
+        FragColor = vec4(meowtexColor, 1.0);
+    }
 }
 )";
 
@@ -298,12 +308,20 @@ unsigned int textureThing(const char* path) {
     unsigned char* meowta = stbi_load(path, &width, &height, &nrChannels, 0);
 
     if (meowta) {
+        std::cout << "loaded " << path << ": " << width << "x" << height << " channels=" << nrChannels << std::endl; // temporary debug print cus im stupid
+
         GLenum format;
-        if (nrChannels == 4) {
+        if (nrChannels == 1) {
+            format = GL_RED;
+        } else if (nrChannels == 3) {
+            format = GL_RGB;
+        } else if (nrChannels == 4) {
             format = GL_RGBA;
-        } else{
+        } else {
+            std::cerr << "unexpected channel count: " << nrChannels << " for " << path << std::endl;
             format = GL_RGB;
         }
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, meowta);
         // couldnt have done that witout param 6
         glGenerateMipmap(GL_TEXTURE_2D); // its so easy
@@ -316,8 +334,8 @@ unsigned int textureThing(const char* path) {
 }
 
 
-// horizon thing 
-void horizonbs(unsigned int& meowndVAO, unsigned int& meowndVBO, unsigned int& meowndEBO) { // bs and buffer setup at the same time
+// platform thing 
+void platformbs(unsigned int& meowndVAO, unsigned int& meowndVBO, unsigned int& meowndEBO) { // bs and buffer setup at the same time
     glGenVertexArrays(1, &meowndVAO);
     glGenBuffers(1, &meowndVBO);
     glGenBuffers(1, &meowndEBO);
@@ -329,11 +347,14 @@ void horizonbs(unsigned int& meowndVAO, unsigned int& meowndVBO, unsigned int& m
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meowndEBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(meowndIndices), meowndIndices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 }
 
 
@@ -362,7 +383,7 @@ void GPUseless(unsigned int& VAO, unsigned int& VBO, unsigned int& EBO) {
 
 
 // main loop for rendering and stuff
-void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO, unsigned int meowndVAO) {
+void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO, unsigned int meowndVAO, unsigned int meowndTexture) {
     while (!glfwWindowShouldClose(window)) { // who named this dawg
         float purrentFrame = (float)glfwGetTime();
         deltaTime = purrentFrame - lastFrame;
@@ -391,6 +412,9 @@ void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO, 
         glUniformMatrix4fv(miewLoc, 1, GL_FALSE, glm::value_ptr(miew));
         glUniformMatrix4fv(meowjectionLoc, 1, GL_FALSE, glm::value_ptr(meowjection));
 
+        int huhTextureLoc = glGetUniformLocation(shaderProgram, "huhTexture");
+        glUniform1i(huhTextureLoc, false);
+
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -398,6 +422,10 @@ void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO, 
 
         int meowndModelLoc = glGetUniformLocation(shaderProgram, "meowdel");
         glUniformMatrix4fv(meowndModelLoc, 1, GL_FALSE, glm::value_ptr(meowndModel));
+
+        glUniform1i(huhTextureLoc, true);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, meowndTexture);
 
         glBindVertexArray(meowndVAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -487,12 +515,14 @@ int main() {
     GPUseless(VAO, VBO, EBO);
 
     unsigned int meowndVAO, meowndVBO, meowndEBO;
-    horizonbs(meowndVAO, meowndVBO, meowndEBO);
+    platformbs(meowndVAO, meowndVBO, meowndEBO);
+
+    unsigned int meowndTexture = textureThing("assets/textures/garden.jpg");
 
     // versioj check cus ppl tend to mess version stuff up and i alwaus need to fix it for them
     std::cout << "current version " << glGetString(GL_VERSION) << std::endl;
 
-    loopsoup(window, shaderProgram, VAO, meowndVAO);
+    loopsoup(window, shaderProgram, VAO, meowndVAO, meowndTexture);
 
     cleanupcrew(VAO, VBO, EBO, shaderProgram, window);
     return 0;
