@@ -455,18 +455,29 @@ void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO, 
 
         float meowmeraSpeed = 2.5f * deltaTime;
 
+        if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+            meowmeraSpeed *= 2.5f;
+
+        glm::vec3 movefix = glm::normalize(glm::vec3(meowmeraFront.x, 0.0f, meowmeraFront.z));
+
         // wasdwdasddwadsdsad
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-            meowmeraPos += meowmeraSpeed * meowmeraFront;
+            meowmeraPos += meowmeraSpeed * movefix;
 
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-            meowmeraPos -= meowmeraSpeed * meowmeraFront;
+            meowmeraPos -= meowmeraSpeed * movefix;
 
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-            meowmeraPos -= glm::normalize(glm::cross(meowmeraFront, meowmeraUp)) * meowmeraSpeed;
+            meowmeraPos -= glm::normalize(glm::cross(movefix, meowmeraUp)) * meowmeraSpeed;
 
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-            meowmeraPos += glm::normalize(glm::cross(meowmeraFront, meowmeraUp)) * meowmeraSpeed;
+            meowmeraPos += glm::normalize(glm::cross(movefix, meowmeraUp)) * meowmeraSpeed;
+
+        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+            meowmeraPos += meowmeraSpeed * meowmeraUp;
+
+        if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+            meowmeraPos -= meowmeraSpeed * meowmeraUp;
     }
 }
 
