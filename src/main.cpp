@@ -15,7 +15,7 @@
 
 
 
-// clutter comment slop just for you because i have nothing better to do and some ppl like it
+// cluttering my code just for you because i have nothing better to do
 
 
 
@@ -145,6 +145,16 @@ void main() {
     int windowWidth = 800;
     int windowHeight = 600; // too important for dumb names
 
+    // uniforms -------------------------------------------
+    struct MeowNiforms {
+        int meowdel;
+        int miew;
+        int meowjection;
+        int huhTexture; // why did i put this one here?
+    };
+
+    MeowNiforms u;
+
 // """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
@@ -153,6 +163,8 @@ void main() {
 
 // mouse stuff
 void chasingMice(GLFWwindow* window, double xposIN, double yposIN) {
+
+    if (!meowsorLocked) return;
 
     // pos
     float meowx = static_cast<float>(xposIN); // because apparently c style casting gets you a lot of flak
@@ -325,10 +337,12 @@ unsigned int textureThing(const char* path) {
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, meowta);
         // couldnt have done that witout param 6
         glGenerateMipmap(GL_TEXTURE_2D); // its so easy
+         stbi_image_free(meowta); // else my memm is gonna get caught leaking
     } else {
         std::cerr << "texture loading isnt loading" << path << std::endl; // only thing yall are getting is the path 4 now
+        unsigned char magenta[3] = {255, 0, 255}; // is this even magenta?
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, magenta);
     }
-    stbi_image_free(meowta); // else my ram is gonna get caught leaking
 
     return meowxture;
 }
@@ -392,8 +406,6 @@ void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO, 
         glClearColor(0.15f, 0.25f, 0.4f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glClear(GL_DEPTH_BUFFER_BIT);
-
         glUseProgram(shaderProgram);
 
         glm::mat4 meowdel = glm::mat4(1.0f);
@@ -404,26 +416,20 @@ void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO, 
 
         glm::mat4 meowjection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
 
-        int meowdelLoc = glGetUniformLocation(shaderProgram, "meowdel");
-        int miewLoc = glGetUniformLocation(shaderProgram, "miew");
-        int meowjectionLoc = glGetUniformLocation(shaderProgram, "meowjection");
+        glUniformMatrix4fv(u.meowdel, 1, GL_FALSE, glm::value_ptr(meowdel));
+        glUniformMatrix4fv(u.miew, 1, GL_FALSE, glm::value_ptr(miew));
+        glUniformMatrix4fv(u.meowjection, 1, GL_FALSE, glm::value_ptr(meowjection));
 
-        glUniformMatrix4fv(meowdelLoc, 1, GL_FALSE, glm::value_ptr(meowdel));
-        glUniformMatrix4fv(miewLoc, 1, GL_FALSE, glm::value_ptr(miew));
-        glUniformMatrix4fv(meowjectionLoc, 1, GL_FALSE, glm::value_ptr(meowjection));
-
-        int huhTextureLoc = glGetUniformLocation(shaderProgram, "huhTexture");
-        glUniform1i(huhTextureLoc, false);
+        glUniform1i(u.huhTexture, false);
 
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
         glm::mat4 meowndModel = glm::mat4(1.0f);
 
-        int meowndModelLoc = glGetUniformLocation(shaderProgram, "meowdel");
-        glUniformMatrix4fv(meowndModelLoc, 1, GL_FALSE, glm::value_ptr(meowndModel));
+        glUniformMatrix4fv(u.meowdel, 1, GL_FALSE, glm::value_ptr(meowndModel));
 
-        glUniform1i(huhTextureLoc, true);
+        glUniform1i(u.huhTexture, true);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, meowndTexture);
 
@@ -494,7 +500,6 @@ void cleanupcrew(unsigned int VAO, unsigned int VBO, unsigned int EBO, unsigned 
 
 
 
-// lets pollute my code
 
 // i remember when i first actually started doing error handling
 // i thought i was doing it correctly but i just put something dumb like 
@@ -516,11 +521,20 @@ void cleanupcrew(unsigned int VAO, unsigned int VBO, unsigned int EBO, unsigned 
 
 
 
+
 int main() {
     GLFWwindow* window = makeMyWindowsComeTrue();
     if (!window) return -1;
 
     unsigned int shaderProgram = createMeowProgram();
+
+    glUseProgram(shaderProgram);
+    glUniform1i(glGetUniformLocation(shaderProgram, "meowtex"), 0);
+
+    u.meowdel      = glGetUniformLocation(shaderProgram, "meowdel");
+    u.miew         = glGetUniformLocation(shaderProgram, "miew");
+    u.meowjection  = glGetUniformLocation(shaderProgram, "meowjection");
+    u.huhTexture   = glGetUniformLocation(shaderProgram, "huhTexture");
 
     unsigned int VAO, VBO, EBO;
     GPUseless(VAO, VBO, EBO);
