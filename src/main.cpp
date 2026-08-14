@@ -5,6 +5,7 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
+#include <obj-pawrser.h>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -619,6 +620,7 @@ int main() {
     glUseProgram(shaderProgram);
     glUniform1i(glGetUniformLocation(shaderProgram, "meowtex"), 0);
 
+
     u.meowdel      = glGetUniformLocation(shaderProgram, "meowdel");
     u.miew         = glGetUniformLocation(shaderProgram, "miew");
     u.meowjection  = glGetUniformLocation(shaderProgram, "meowjection");
@@ -631,6 +633,7 @@ int main() {
     u.meowterCutOff = glGetUniformLocation(shaderProgram, "meowterCutOff");
     u.crashLightOn = glGetUniformLocation(shaderProgram, "crashLightOn");
 
+
     unsigned int VAO, VBO, EBO;
     GPUseless(VAO, VBO, EBO);
 
@@ -642,6 +645,9 @@ int main() {
     // versioj check cus ppl tend to mess version stuff up and i alwaus need to fix it for them
     std::cout << "current version " << glGetString(GL_VERSION) << std::endl;
 
+    // pawrser test
+    Meowdel testModel = loadObj("assets/models/mittest.obj");
+
     loopsoup(window, shaderProgram, VAO, meowndVAO, meowndTexture);
 
     cleanupcrew(VAO, VBO, EBO, shaderProgram, window);
@@ -652,3 +658,5 @@ int main() {
 // k so vertex = points in 3d space n fragment = color
 // vao n vbo = gpu memory stuff
 // ebo holds indecies
+
+// -common50
