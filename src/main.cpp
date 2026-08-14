@@ -132,18 +132,19 @@ uniform vec3 lightCol;
 uniform vec3 viewPaws;
 uniform float meownCutOff;
 uniform float meowterCutOff;
+uniform bool crashLightOn;
+
 void main() {
     vec3 baseColor = huhTexture ? texture(meowtex, meowtexCoord).rgb : meowtexColor;
 
-    vec3 ambient = 0.05 * lightCol; // dimmer ambient so the cone actually reads as dark outside it
+    vec3 ambient = 0.05 * lightCol;
 
     vec3 norm = normalize(meowMal);
     vec3 toLight = normalize(lightPaws - fragPaws);
 
-    // spotlight cone falloff
     float theta = dot(toLight, normalize(-lightDir));
     float epsilon = meownCutOff - meowterCutOff;
-    float spotlight = clamp((theta - meowterCutOff) / epsilon, 0.0, 1.0);
+    float spotlight = crashLightOn ? clamp((theta - meowterCutOff) / epsilon, 0.0, 1.0) : 0.0;
 
     float diff = max(dot(norm, toLight), 0.0);
     vec3 diffuse = diff * lightCol * spotlight;
@@ -185,6 +186,9 @@ void main() {
 
     bool meowsorLocked = true;
 
+    // keyboard stuff --------------------------------------
+    bool crashLightOn = true;
+
 
 
     // frame timing stuff ---------------------------------
@@ -209,6 +213,7 @@ void main() {
         int viewPaws;
         int meownCutOff;
         int meowterCutOff;
+        int crashLightOn;
     };
 
     MeowNiforms u;
@@ -493,6 +498,8 @@ void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO, 
 
         glUniform1i(u.huhTexture, false);
 
+        glUniform1i(u.crashLightOn, crashLightOn);
+
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
@@ -528,6 +535,16 @@ void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO, 
             tabWasPressed = true;
         } else {
             tabWasPressed = false;
+        }
+
+        static bool fWasPressed = false;
+        if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
+            if (!fWasPressed) {
+                crashLightOn = !crashLightOn;
+            }
+            fWasPressed = true;
+        } else {
+            fWasPressed = false;
         }
 
         float meowmeraSpeed = 2.5f * deltaTime;
@@ -612,6 +629,7 @@ int main() {
     u.lightDir      = glGetUniformLocation(shaderProgram, "lightDir");
     u.meownCutOff   = glGetUniformLocation(shaderProgram, "meownCutOff");
     u.meowterCutOff = glGetUniformLocation(shaderProgram, "meowterCutOff");
+    u.crashLightOn = glGetUniformLocation(shaderProgram, "crashLightOn");
 
     unsigned int VAO, VBO, EBO;
     GPUseless(VAO, VBO, EBO);
