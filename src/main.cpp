@@ -26,36 +26,59 @@
 // spinning colored cube thing object whatever it is
 // 3 pos, 3 color and 2 texcoord values for each n every lil vertex
 float vertices[] = {
-//  pos                   color               texcoord
-    -0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,
-     0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,
-     0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f,
-    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.0f,
-    -0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 1.0f,
-     0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 1.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 0.0f
+// pos                  color              normal
+// back (-z)
+-0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,   0.0f, 0.0f, -1.0f,
+ 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,   0.0f, 0.0f, -1.0f,
+ 0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f,   0.0f, 0.0f, -1.0f,
+-0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.0f,   0.0f, 0.0f, -1.0f,
+// front (+z)
+-0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 1.0f,   0.0f, 0.0f, 1.0f,
+ 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 1.0f,   0.0f, 0.0f, 1.0f,
+ 0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 1.0f,   0.0f, 0.0f, 1.0f,
+-0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 0.0f,   0.0f, 0.0f, 1.0f,
+// left (-x)
+-0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,  -1.0f, 0.0f, 0.0f,
+-0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 1.0f,  -1.0f, 0.0f, 0.0f,
+-0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 0.0f,  -1.0f, 0.0f, 0.0f,
+-0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.0f,  -1.0f, 0.0f, 0.0f,
+// right (+x)
+ 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,   1.0f, 0.0f, 0.0f,
+ 0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f,   1.0f, 0.0f, 0.0f,
+ 0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 1.0f,   1.0f, 0.0f, 0.0f,
+ 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 1.0f,   1.0f, 0.0f, 0.0f,
+// bottom (-y)
+-0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,   0.0f, -1.0f, 0.0f,
+ 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,   0.0f, -1.0f, 0.0f,
+ 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 1.0f,   0.0f, -1.0f, 0.0f,
+-0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 1.0f,   0.0f, -1.0f, 0.0f,
+// top (+y)
+-0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.0f,   0.0f, 1.0f, 0.0f,
+ 0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f,   0.0f, 1.0f, 0.0f,
+ 0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 1.0f,   0.0f, 1.0f, 0.0f,
+-0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 0.0f,   0.0f, 1.0f, 0.0f,
+// its so hard to keep track of this stuff
 };
 
 // indecies n stuff
 // so basically saying draw the triangles like *this*
 unsigned int indices[] = {
-    0, 1, 2,  2, 3, 0,
-    4, 5, 6,  6, 7, 4,
-    4, 0, 3,  3, 7, 4,
-    1, 5, 6,  6, 2, 1,
-    3, 2, 6,  6, 7, 3,
-    4, 5, 1,  1, 0, 4
+    0, 1, 2,    2, 3, 0,
+    4, 5, 6,    6, 7, 4,
+    8, 9, 10,   10, 11, 8,
+    12, 13, 14, 14, 15, 12,
+    16, 17, 18, 18, 19, 16,
+    20, 21, 22, 22, 23, 20
 
 };
 
 // YOUR HORIZON IS MY GARDEN BUT WHO WATERS IT? 
 float meowndVertices[] = {
-    //   pos                     color              texcoord
-    -10.0f, -1.0f, -10.0f,   0.2f, 0.2f, 0.25f,   0.0f, 1.0f,
-     10.0f, -1.0f, -10.0f,   0.2f, 0.2f, 0.25f,   1.0f, 1.0f,
-     10.0f, -1.0f,  10.0f,   0.2f, 0.2f, 0.25f,   1.0f, 0.0f,
-    -10.0f, -1.0f,  10.0f,   0.2f, 0.2f, 0.25f,   0.0f, 0.0f
+    //   pos                     color              normal              texcoord
+    -10.0f, -1.0f, -10.0f,   0.2f, 0.2f, 0.25f,   0.0f, 1.0f, 0.0f,   0.0f, 1.0f,
+     10.0f, -1.0f, -10.0f,   0.2f, 0.2f, 0.25f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f,
+     10.0f, -1.0f,  10.0f,   0.2f, 0.2f, 0.25f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
+    -10.0f, -1.0f,  10.0f,   0.2f, 0.2f, 0.25f,   0.0f, 1.0f, 0.0f,   0.0f, 0.0f
 };
 
 unsigned int meowndIndices[] = {
@@ -76,13 +99,18 @@ const char* vertexShaderSource = R"(
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aColor;
 layout (location = 2) in vec2 aTexCoord;
+layout (location = 3) in vec3 aNormal;
 out vec3 meowtexColor;
 out vec2 meowtexCoord;
+out vec3 meowMal;
+out vec3 fragPaws;
 uniform mat4 meowdel;
 uniform mat4 miew;
 uniform mat4 meowjection;
 void main() {
     gl_Position = meowjection * miew * meowdel * vec4(aPos, 1.0);
+    fragPaws = vec3(meowdel * vec4(aPos, 1.0));
+    meowMal = mat3(transpose(inverse(meowdel))) * aNormal;
     meowtexColor = aColor;
     meowtexCoord = aTexCoord;
 }
@@ -93,15 +121,39 @@ const char* fragmentShaderSource = R"(
 #version 330 core
 in vec3 meowtexColor;
 in vec2 meowtexCoord;
+in vec3 meowMal;
+in vec3 fragPaws;
 out vec4 FragColor;
 uniform sampler2D meowtex;
 uniform bool huhTexture;
+uniform vec3 lightPaws;
+uniform vec3 lightDir;
+uniform vec3 lightCol;
+uniform vec3 viewPaws;
+uniform float meownCutOff;
+uniform float meowterCutOff;
 void main() {
-    if (huhTexture) {
-        FragColor = texture(meowtex, meowtexCoord);
-    } else {
-        FragColor = vec4(meowtexColor, 1.0);
-    }
+    vec3 baseColor = huhTexture ? texture(meowtex, meowtexCoord).rgb : meowtexColor;
+
+    vec3 ambient = 0.05 * lightCol; // dimmer ambient so the cone actually reads as dark outside it
+
+    vec3 norm = normalize(meowMal);
+    vec3 toLight = normalize(lightPaws - fragPaws);
+
+    // spotlight cone falloff
+    float theta = dot(toLight, normalize(-lightDir));
+    float epsilon = meownCutOff - meowterCutOff;
+    float spotlight = clamp((theta - meowterCutOff) / epsilon, 0.0, 1.0);
+
+    float diff = max(dot(norm, toLight), 0.0);
+    vec3 diffuse = diff * lightCol * spotlight;
+
+    vec3 viewDir = normalize(viewPaws - fragPaws);
+    vec3 reflectDir = reflect(-toLight, norm);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
+    vec3 specular = 0.5 * spec * lightCol * spotlight;
+
+    FragColor = vec4((ambient + diffuse + specular) * baseColor, 1.0);
 }
 )";
 
@@ -151,6 +203,12 @@ void main() {
         int miew;
         int meowjection;
         int huhTexture; // why did i put this one here?
+        int lightPaws;
+        int lightCol;
+        int lightDir;
+        int viewPaws;
+        int meownCutOff;
+        int meowterCutOff;
     };
 
     MeowNiforms u;
@@ -361,14 +419,17 @@ void platformbs(unsigned int& meowndVAO, unsigned int& meowndVBO, unsigned int& 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meowndEBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(meowndIndices), meowndIndices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(9 * sizeof(float)));
     glEnableVertexAttribArray(2);
+
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(3);
 }
 
 
@@ -388,11 +449,14 @@ void GPUseless(unsigned int& VAO, unsigned int& VBO, unsigned int& EBO) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(3);
 }
 
 
@@ -419,6 +483,13 @@ void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO, 
         glUniformMatrix4fv(u.meowdel, 1, GL_FALSE, glm::value_ptr(meowdel));
         glUniformMatrix4fv(u.miew, 1, GL_FALSE, glm::value_ptr(miew));
         glUniformMatrix4fv(u.meowjection, 1, GL_FALSE, glm::value_ptr(meowjection));
+
+        glUniform3f(u.lightPaws, meowmeraPos.x, meowmeraPos.y, meowmeraPos.z);
+        glUniform3f(u.lightDir, meowmeraFront.x, meowmeraFront.y, meowmeraFront.z);
+        glUniform3f(u.lightCol, 1.0f, 1.0f, 1.0f);
+        glUniform3f(u.viewPaws, meowmeraPos.x, meowmeraPos.y, meowmeraPos.z);
+        glUniform1f(u.meownCutOff, cos(glm::radians(12.5f)));
+        glUniform1f(u.meowterCutOff, cos(glm::radians(17.5f))); // standard angles cus im unoriginal
 
         glUniform1i(u.huhTexture, false);
 
@@ -535,6 +606,12 @@ int main() {
     u.miew         = glGetUniformLocation(shaderProgram, "miew");
     u.meowjection  = glGetUniformLocation(shaderProgram, "meowjection");
     u.huhTexture   = glGetUniformLocation(shaderProgram, "huhTexture");
+    u.lightPaws    = glGetUniformLocation(shaderProgram, "lightPaws");
+    u.lightCol     = glGetUniformLocation(shaderProgram, "lightCol");
+    u.viewPaws     = glGetUniformLocation(shaderProgram, "viewPaws");
+    u.lightDir      = glGetUniformLocation(shaderProgram, "lightDir");
+    u.meownCutOff   = glGetUniformLocation(shaderProgram, "meownCutOff");
+    u.meowterCutOff = glGetUniformLocation(shaderProgram, "meowterCutOff");
 
     unsigned int VAO, VBO, EBO;
     GPUseless(VAO, VBO, EBO);
