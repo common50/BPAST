@@ -337,7 +337,7 @@ unsigned int textureThing(const char* path) {
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, meowta);
         // couldnt have done that witout param 6
         glGenerateMipmap(GL_TEXTURE_2D); // its so easy
-         stbi_image_free(meowta); // else my memm is gonna get caught leaking
+         stbi_image_free(meowta); // else my mem is gonna get caught leaking
     } else {
         std::cerr << "texture loading isnt loading" << path << std::endl; // only thing yall are getting is the path 4 now
         unsigned char magenta[3] = {255, 0, 255}; // is this even magenta?
