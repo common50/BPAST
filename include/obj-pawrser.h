@@ -10,6 +10,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <unordered_map>
 
 struct Meowdel {
     std::vector<float> vertexData;
@@ -47,12 +48,16 @@ Meowdel loadObj(const char* path) {
             glm::vec3 pos;
             ss >> pos.x >> pos.y >> pos.z;
             positions.push_back(pos);
+
         } else if (tag == "vn") {
             glm::vec3 norm;
             ss >> norm.x >> norm.y >> norm.z;
             normals.push_back(norm);
+
         } else if (tag == "f") {
             std::string token;
+            std::vector<unsigned int> faceIndices;
+
             while (ss >> token) {
 
                 // so the f line looks like 1//3 or 1/2/3 (pos/tex/norm)
@@ -60,15 +65,15 @@ Meowdel loadObj(const char* path) {
                 // to get the pos n norm we gotta to find the first and second slash and then just
                 // take everything before the first slash as pos and everything after the second as norm
 
-                size_t firstMeow = token.find('/'); // try n find the first slash
+                size_t firstMeow = token.find('/');
                 // if we dont find a slash for some reason:
                 if (firstMeow == std::string::npos) {
                     // so apparently it means the whole token is just the pos
+                    // shouldnt happen with real files though
                     int posIdx = std::stoi(token);
-                    std::cout << "posidx:" << "huh... the entire thing is just the pos..." << std::endl;
                 } else { // else if we DO find a slash
                     int posIdx = std::stoi(token.substr(0, firstMeow));
-                    size_t secondMeow = token.find('/', firstMeow + 1); // find second slash
+                    size_t secondMeow = token.find('/', firstMeow + 1);
 
                     // now we check the shape, whether its 1//3 or 1/2/3
                     if (secondMeow == firstMeow + 1) { // check if the slashes are adjecent
@@ -84,7 +89,23 @@ Meowdel loadObj(const char* path) {
                         // so then we take chars 1-2 which are pos and 3-4 which are norm
                         int normIdx = std::stoi(token.substr(secondMeow + 1));
                         std::string key = std::to_string(posIdx) + "_" + std::to_string(normIdx);
-                        std::cout << "pos idx: " << posIdx << ", norm idx: " << normIdx << " (no tex) key: " << key << std::endl;
+                        auto it = combinedLookup.find(key); // dont ask me what auto means
+                        if (it != combinedLookup.end()) {
+                                faceIndices.push_back(it->second);
+                        } else {
+                            glm::vec3 pos = positions[posIdx - 1];
+                            glm::vec3 norm = normals[normIdx - 1];
+                            // push
+                            model.vertexData.insert(model.vertexData.end(), {
+                                pos.x, pos.y, pos.z,
+                                0.7f, 0.7f, 0.7f, // hardcoded 4 now lmk if i forgot
+                                norm.x, norm.y, norm.z
+                            });
+
+                            unsigned int newIndex = (unsigned int)(model.vertexData.size() / 9 - 1);
+                            combinedLookup[key] = newIndex;
+                            faceIndices.push_back(newIndex);
+                        }
 
 
                     } else { // if has a texcoord:
@@ -101,13 +122,34 @@ Meowdel loadObj(const char* path) {
                         // 1 / 2 / 3
                         // so we skip the texcoord
 
-                        // and then we do it like normal
+                        // and then we do it as if there is no texcoord (since we skip the texcoord ofc)
                         int normIdx = std::stoi(token.substr(secondMeow + 1));
                         std::string key = std::to_string(posIdx) + "_" + std::to_string(normIdx);
-                        std::cout << "pos idx: " << posIdx << ", tex idx: " << texIdx << ", norm idx: " << normIdx << " key: " << key << std::endl;
+                        auto it = combinedLookup.find(key);
+                        if (it != combinedLookup.end()) {
+                                faceIndices.push_back(it->second);
+                        } else {
+                            glm::vec3 pos = positions[posIdx - 1];
+                            glm::vec3 norm = normals[normIdx - 1];
+                            // pushggVG
+                            model.vertexData.insert(model.vertexData.end(), {
+                                pos.x, pos.y, pos.z,
+                                0.7f, 0.7f, 0.7f, // same as b4
+                                norm.x, norm.y, norm.z
+                            });
 
+                            unsigned int newIndex = (unsigned int)(model.vertexData.size() / 9 - 1);
+                            combinedLookup[key] = newIndex;
+                            faceIndices.push_back(newIndex);
+                        }
                     }
                 }
+            }
+
+            for (size_t i = 1; i + 1 < faceIndices.size(); i++) {
+                model.indices.push_back(faceIndices[0]);
+                model.indices.push_back(faceIndices[i]);
+                model.indices.push_back(faceIndices[i + 1]);
             }
         }
     }
