@@ -161,3 +161,5 @@ Meowdel loadObj(const char* path) {
 }
 
 // -common50
+
+// i just found out that "f 1 2 3" is also valid! isnt that great? because now my shitty parser wont work! fucking amazing!
