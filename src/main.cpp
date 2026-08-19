@@ -537,10 +537,10 @@ void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO, 
         glBindVertexArray(meowndVAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-        glm::mat4 objModel = glm::mat4(1.0f);
-        objModel = glm::translate(objModel, glm::vec3(2.0f, 0.0f, 0.0f)); // shove it off to the side so it wont the cube
+        glm::mat4 idk = glm::mat4(1.0f);
+        idk = glm::translate(idk, glm::vec3(2.0f, 0.0f, 0.0f)); // shove it off to the side so it wont the cube
 
-        glUniformMatrix4fv(u.meowdel, 1, GL_FALSE, glm::value_ptr(objModel));
+        glUniformMatrix4fv(u.meowdel, 1, GL_FALSE, glm::value_ptr(idk));
         glUniform1i(u.huhTexture, false); //d
 
         glBindVertexArray(modelVAO);
@@ -682,7 +682,7 @@ int main() {
     GPUseless(testModel, modelVAO, modelVBO, modelEBO);
 
     loopsoup(window, shaderProgram, VAO, meowndVAO, meowndTexture, modelVAO, (unsigned int)testModel.indices.size());
-    
+
     cleanupcrew(VAO, VBO, EBO, shaderProgram, window);
     return 0;
 }
