@@ -1,4 +1,4 @@
-// graphics engine but i lowkey cheat using opengl and glfw cus im lazy 
+// graphics engine but i lowkey cheat using opengl and glfw cus im lazy
 // be patient and sit still
 
 // 2 lines for functions else ill go insane
@@ -178,13 +178,13 @@ void main() {
     glm::vec3 meowmeraFront = glm::vec3(0.0f, 0.0f, -1.0f);
     glm::vec3 meowmeraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
-    float myaw = -90.0f; 
+    float myaw = -90.0f;
     float meowch = 0.0f; // (yaw n pitch for the record im just bored and this is a good way to pass time)
 
 
 
     // mouse stuff -----------------------------------------
-    float lastXmeowse = 400.0f, lastYmeowse = 300.0f; 
+    float lastXmeowse = 400.0f, lastYmeowse = 300.0f;
     bool firstmeowse = true; // was told to add this
 
     bool meowsorLocked = true;
@@ -251,7 +251,7 @@ void chasingMice(GLFWwindow* window, double xposIN, double yposIN) {
     float nonsense = 0.1f; // sensitivity for the record
 
     meoffsetX *= nonsense;
-    meoffsetY *= nonsense;    
+    meoffsetY *= nonsense;
 
     myaw += meoffsetX;
     meowch += meoffsetY;
@@ -324,7 +324,7 @@ unsigned int createMeowProgram() {
     glShaderSource(meowtexShader, 1, &vertexShaderSource, nullptr);
     glCompileShader(meowtexShader);
 
-    int meowsess;  
+    int meowsess;
     char meowinfo[512];
     glGetShaderiv(meowtexShader, GL_COMPILE_STATUS, &meowsess);
     if (!meowsess) {
@@ -373,7 +373,7 @@ unsigned int textureThing(const char* path) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    stbi_set_flip_vertically_on_load(true); 
+    stbi_set_flip_vertically_on_load(true);
 
     int width, height, nrChannels; // i couldnt come up with anything :( same with path btw
     unsigned char* meowta = stbi_load(path, &width, &height, &nrChannels, 0);
@@ -407,7 +407,7 @@ unsigned int textureThing(const char* path) {
 }
 
 
-// platform thing 
+// platform thing
 void platformbs(unsigned int& meowndVAO, unsigned int& meowndVBO, unsigned int& meowndEBO) { // bs and buffer setup at the same time
     glGenVertexArrays(1, &meowndVAO);
     glGenBuffers(1, &meowndVBO);
@@ -437,7 +437,7 @@ void platformbs(unsigned int& meowndVAO, unsigned int& meowndVBO, unsigned int& 
 // lowk gotta delete this
 void spinningRainbowCube(unsigned int& VAO, unsigned int& VBO, unsigned int& EBO) {
 
-    // was gonna name em sum stupid like meowVAO n meowVBO 
+    // was gonna name em sum stupid like meowVAO n meowVBO
     // but maybe not they seem too important to be named like that
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -494,7 +494,7 @@ void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO, 
         float purrentFrame = (float)glfwGetTime();
         deltaTime = purrentFrame - lastFrame;
         lastFrame = purrentFrame;
-        
+
         glClearColor(0.15f, 0.25f, 0.4f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -622,7 +622,7 @@ void cleanupcrew(unsigned int VAO, unsigned int VBO, unsigned int EBO, unsigned 
 
 
 // i remember when i first actually started doing error handling
-// i thought i was doing it correctly but i just put something dumb like 
+// i thought i was doing it correctly but i just put something dumb like
 // "if (!window) return -1;" and i thought that was good enough
 // then i started thinking hmm wait i dont actually know exactly WHERE the error was
 // so i also started putting a print statement saying "glfwInit lowkey failed" or "window creation got messed up"
@@ -687,9 +687,9 @@ int main() {
     return 0;
 }
 
-// notes 2 self ignore this pls its embarrassing lowk
-// k so vertex = points in 3d space n fragment = color
-// vao n vbo = gpu memory stuff
-// ebo holds indecies
+// TO DO:
+// * fix up the loopsoup thing so that we dont have the entire codebase in there
+// * split the codebase into smaller chunks (so like multiple files)
+// * find out what other stuff i need to fix b4 adding new features to this mess
 
 // -common50
