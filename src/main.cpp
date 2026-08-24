@@ -14,6 +14,11 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
+extern "C" {
+    __declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
+    __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 0x00000001;
+}
+
 
 
 // cluttering my code just for you because i have nothing better to do
