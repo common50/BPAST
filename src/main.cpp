@@ -284,7 +284,7 @@ void huh(GLFWwindow* window, int realmeowidth, int realmeowght) { // meowwwww
 GLFWwindow* makeMyWindowsComeTrue() {
     if (!glfwInit()) {
         std::cerr << "yo glfwInit failed haha good luck" << std::endl; // cus ppl always get angry at me if i dont do err handling
-        return nullptr; // should i make this 0 haha
+        return nullptr;
     }
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
