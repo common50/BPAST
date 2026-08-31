@@ -698,5 +698,6 @@ int main() {
 // * fix up the loopsoup thing so that we dont have the entire codebase in there
 // * split the codebase into smaller chunks (so like multiple files)
 // * find out what other stuff i need to fix b4 adding new features to this mess
+// * use less globals
 
 // -common50
