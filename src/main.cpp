@@ -699,5 +699,6 @@ int main() {
 // * split the codebase into smaller chunks (so like multiple files)
 // * find out what other stuff i need to fix b4 adding new features to this mess
 // * use less globals
+// * use classes
 
 // -common50
