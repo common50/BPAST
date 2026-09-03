@@ -31,6 +31,8 @@ extern "C" {
 
 // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX verticies n stuff XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
+// TO DO: remove this stuff and use .obj files instead
+
 // i gotta stop hardcoding stuff
 
 // spinning colored cube thing object whatever it is
