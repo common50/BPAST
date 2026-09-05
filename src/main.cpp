@@ -294,7 +294,7 @@ void huh(GLFWwindow* window, int realmeowidth, int realmeowght) { // meowwwww
 // make window and context and stuff
 GLFWwindow* makeMyWindowsComeTrue() {
     if (!glfwInit()) {
-        std::cerr << "yo glfwInit failed haha good luck" << std::endl; // cus ppl always get angry at me if i dont do err handling
+        std::cerr << "yo glfwInit failed haha good luck" << std::endl;
         return nullptr;
     }
 
@@ -303,7 +303,7 @@ GLFWwindow* makeMyWindowsComeTrue() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     GLFWwindow* window = glfwCreateWindow(800, 600, "BPAST", nullptr, nullptr);
-    // same reason as above, i should probably do err handling here too
+    
     if (!window) {
         std::cerr << "yo the window isnt working gang helppppp" << std::endl;
         glfwTerminate();
