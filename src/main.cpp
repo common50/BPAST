@@ -23,7 +23,6 @@ extern "C" {
 
 
 
-// cluttering my code just for you because i have nothing better to do
 
 
 
