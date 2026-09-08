@@ -258,7 +258,7 @@ void chasingMice(GLFWwindow* window, double xposIN, double yposIN) {
     lastXmeowse = meowx;
     lastYmeowse = meowy;
 
-    float nonsense = 0.1f; // sensitivity for the record
+    float nonsense = 0.1f;
 
     meoffsetX *= nonsense;
     meoffsetY *= nonsense;
