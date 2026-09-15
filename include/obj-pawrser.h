@@ -74,9 +74,24 @@ Meowdel loadObj(const char* path) {
                 size_t firstMeow = token.find('/');
                 // if we dont find a slash for some reason:
                 if (firstMeow == std::string::npos) {
-                    // so apparently it means the whole token is just the pos
-                    // shouldnt happen with real files though
                     int posIdx = std::stoi(token);
+                    std::string key = std::to_string(posIdx) + "_0_0";
+                    auto it = combinedLookup.find(key);
+                    if (it != combinedLookup.end()) {
+                        faceIndices.push_back(it->second);
+                    } else {
+                        // defaults
+                        glm::vec3 pos = positions[posIdx - 1];
+                        model.vertexData.insert(model.vertexData.end(), {
+                            pos.x, pos.y, pos.z,
+                            0.7f, 0.7f, 0.7f,
+                            0.0f, 1.0f, 0.0f,
+                            0.0f, 0.0f
+                        });
+                        unsigned int newIndex = (unsigned int)(model.vertexData.size() / 11 - 1);
+                        combinedLookup[key] = newIndex;
+                        faceIndices.push_back(newIndex);
+                    }
                 } else { // else if we DO find a slash
                     int posIdx = std::stoi(token.substr(0, firstMeow));
                     size_t secondMeow = token.find('/', firstMeow + 1);
@@ -94,7 +109,7 @@ Meowdel loadObj(const char* path) {
 
                         // so then we take chars 1-2 which are pos and 3-4 which are norm
                         int normIdx = std::stoi(token.substr(secondMeow + 1));
-                        std::string key = std::to_string(posIdx) + "_" + std::to_string(normIdx);
+                        std::string key = std::to_string(posIdx) + "_" + std::to_string(normIdx) + "_0";
                         auto it = combinedLookup.find(key); // dont ask me what auto means
                         if (it != combinedLookup.end()) {
                                 faceIndices.push_back(it->second);
@@ -170,4 +185,4 @@ Meowdel loadObj(const char* path) {
 
 // -common50
 
-// i just found out that "f 1 2 3" is also valid! isnt that great? because now my shitty parser wont work! fucking amazing!
+// okay i think i fixed the "f 1 2 3" thing lmk if i fucked it up
