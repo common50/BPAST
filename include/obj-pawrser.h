@@ -1,4 +1,4 @@
-// self made .obj parser for my other stuff lmk if im messing up with legal (other ppls stuff) cus im 
+// self made .obj parser for my other stuff lmk if im messing up with legal (other ppls stuff) cus im
 // going to do this inn like the standard way so i might accidentally copy some1 else so pls lmk
 
 // idk what im doinggg ghhghghhghhhhgghgghhgh
@@ -22,6 +22,7 @@ Meowdel loadObj(const char* path) {
 
     std::vector<glm::vec3> positions; // thanks glm
     std::vector<glm::vec3> normals;
+    std::vector<glm::vec2> texCoords;
 
     std::unordered_map<std::string, unsigned int> combinedLookup; // where does this one go??? ehh whatever it works
 
@@ -53,6 +54,11 @@ Meowdel loadObj(const char* path) {
             glm::vec3 norm;
             ss >> norm.x >> norm.y >> norm.z;
             normals.push_back(norm);
+
+        } else if (tag == "vt") {
+            glm::vec2 pspsps;
+            ss >> pspsps.x >> pspsps.y;
+            texCoords.push_back(pspsps);
 
         } else if (tag == "f") {
             std::string token;
@@ -99,17 +105,17 @@ Meowdel loadObj(const char* path) {
                             model.vertexData.insert(model.vertexData.end(), {
                                 pos.x, pos.y, pos.z,
                                 0.7f, 0.7f, 0.7f, // hardcoded 4 now lmk if i forgot
-                                norm.x, norm.y, norm.z
+                                norm.x, norm.y, norm.z,
+                                0.5f, 0.5f
                             });
-
-                            unsigned int newIndex = (unsigned int)(model.vertexData.size() / 9 - 1);
+                            unsigned int newIndex = (unsigned int)(model.vertexData.size() / 11 - 1);
                             combinedLookup[key] = newIndex;
                             faceIndices.push_back(newIndex);
                         }
 
 
                     } else { // if has a texcoord:
-                        
+
                         // in this case there is a texcoord because the slashes arent adjecent
                         // (since there is a texcoord in between them, duh)
                         // so the shape is 1/2/3
@@ -124,21 +130,23 @@ Meowdel loadObj(const char* path) {
 
                         // and then we do it as if there is no texcoord (since we skip the texcoord ofc)
                         int normIdx = std::stoi(token.substr(secondMeow + 1));
-                        std::string key = std::to_string(posIdx) + "_" + std::to_string(normIdx);
+                        std::string key = std::to_string(posIdx) + "_" + std::to_string(normIdx) + "_" + std::to_string(texIdx);
                         auto it = combinedLookup.find(key);
                         if (it != combinedLookup.end()) {
                                 faceIndices.push_back(it->second);
                         } else {
                             glm::vec3 pos = positions[posIdx - 1];
                             glm::vec3 norm = normals[normIdx - 1];
+                            glm::vec2 tex = texCoords[texIdx - 1];
                             // pushggVG
                             model.vertexData.insert(model.vertexData.end(), {
                                 pos.x, pos.y, pos.z,
                                 0.7f, 0.7f, 0.7f, // same as b4
-                                norm.x, norm.y, norm.z
+                                norm.x, norm.y, norm.z,
+                                tex.x, tex.y
                             });
 
-                            unsigned int newIndex = (unsigned int)(model.vertexData.size() / 9 - 1);
+                            unsigned int newIndex = (unsigned int)(model.vertexData.size() / 11 - 1);
                             combinedLookup[key] = newIndex;
                             faceIndices.push_back(newIndex);
                         }
