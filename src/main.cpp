@@ -23,13 +23,14 @@ extern "C" {
 
 
 
-// cluttering my code just for you because i have nothing better to do
 
 
 
 
 
 // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX verticies n stuff XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+// TO DO: remove this stuff and use .obj files instead
 
 // i gotta stop hardcoding stuff
 
@@ -174,6 +175,8 @@ void main() {
 
 // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX global vars n straight bars XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
+// TO DO: remove all this stuff and make vars not global because its bad
+
 // i always keep it neat with the global vars cus i like to know where they are and what they do
 // else ill mess up, seriously, i dont know what my problem is when i have messy globals
 
@@ -255,7 +258,7 @@ void chasingMice(GLFWwindow* window, double xposIN, double yposIN) {
     lastXmeowse = meowx;
     lastYmeowse = meowy;
 
-    float nonsense = 0.1f; // sensitivity for the record
+    float nonsense = 0.1f;
 
     meoffsetX *= nonsense;
     meoffsetY *= nonsense;
@@ -290,7 +293,7 @@ void huh(GLFWwindow* window, int realmeowidth, int realmeowght) { // meowwwww
 // make window and context and stuff
 GLFWwindow* makeMyWindowsComeTrue() {
     if (!glfwInit()) {
-        std::cerr << "yo glfwInit failed haha good luck" << std::endl; // cus ppl always get angry at me if i dont do err handling
+        std::cerr << "yo glfwInit failed haha good luck" << std::endl;
         return nullptr;
     }
 
@@ -299,7 +302,7 @@ GLFWwindow* makeMyWindowsComeTrue() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     GLFWwindow* window = glfwCreateWindow(800, 600, "BPAST", nullptr, nullptr);
-    // same reason as above, i should probably do err handling here too
+    
     if (!window) {
         std::cerr << "yo the window isnt working gang helppppp" << std::endl;
         glfwTerminate();
@@ -692,5 +695,7 @@ int main() {
 // * fix up the loopsoup thing so that we dont have the entire codebase in there
 // * split the codebase into smaller chunks (so like multiple files)
 // * find out what other stuff i need to fix b4 adding new features to this mess
+// * use less globals
+// * use classes
 
 // -common50
