@@ -494,13 +494,76 @@ void GPUseless(Meowdel& model, unsigned int& meow, unsigned int& mrow, unsigned 
     glEnableVertexAttribArray(3);
 }
 
+void timething() {
+    float purrentFrame = (float)glfwGetTime();
+    deltaTime = purrentFrame - lastFrame;
+    lastFrame = purrentFrame;
+}
+
+void toggleKeys(GLFWwindow* window) {
+    static bool tabWasPressed = false;
+            if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS) {
+                if (!tabWasPressed) {
+                    meowsorLocked = !meowsorLocked;
+                    if (meowsorLocked) {
+                        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                        firstmeowse = true;
+                    } else {
+                        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                    }
+                } // yay so many curly braces
+                tabWasPressed = true;
+            } else {
+                tabWasPressed = false;
+            }
+
+            static bool fWasPressed = false;
+            if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
+                if (!fWasPressed) {
+                    crashLightOn = !crashLightOn;
+                }
+                fWasPressed = true;
+            } else {
+                fWasPressed = false;
+            }
+
+}
+
+void meowmeraMove(GLFWwindow* window, float deltaTime) {
+    float meowmeraSpeed = 2.5f * deltaTime;
+
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+        meowmeraSpeed *= 2.5f;
+
+
+    glm::vec3 meowfix = glm::normalize(glm::vec3(meowmeraFront.x, 0.0f, meowmeraFront.z));
+
+    // wasdwdasddwadsdsad
+       if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+           meowmeraPos += meowmeraSpeed * meowfix;
+
+       if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+           meowmeraPos -= meowmeraSpeed * meowfix;
+
+       if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+           meowmeraPos -= glm::normalize(glm::cross(meowfix, meowmeraUp)) * meowmeraSpeed;
+
+       if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+           meowmeraPos += glm::normalize(glm::cross(meowfix, meowmeraUp)) * meowmeraSpeed;
+
+       if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+           meowmeraPos += meowmeraSpeed * meowmeraUp;
+
+       if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+           meowmeraPos -= meowmeraSpeed * meowmeraUp;
+}
 
 // main loop for rendering and stuff
 void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO, unsigned int meowndVAO, unsigned int meowndTexture, unsigned int modelVAO, unsigned int modelIndexCount) {
     while (!glfwWindowShouldClose(window)) { // who named this dawg
-        float purrentFrame = (float)glfwGetTime();
-        deltaTime = purrentFrame - lastFrame;
-        lastFrame = purrentFrame;
+        timething();
+        toggleKeys(window);
+        meowmeraMove(window, deltaTime);
 
         glClearColor(0.15f, 0.25f, 0.4f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -560,57 +623,6 @@ void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO, 
             glfwSetWindowShouldClose(window, true);
         }
 
-        static bool tabWasPressed = false;
-        if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS) {
-            if (!tabWasPressed) {
-                meowsorLocked = !meowsorLocked;
-                if (meowsorLocked) {
-                    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-                    firstmeowse = true;
-                } else {
-                    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-                }
-            } // yay so many curly braces
-            tabWasPressed = true;
-        } else {
-            tabWasPressed = false;
-        }
-
-        static bool fWasPressed = false;
-        if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
-            if (!fWasPressed) {
-                crashLightOn = !crashLightOn;
-            }
-            fWasPressed = true;
-        } else {
-            fWasPressed = false;
-        }
-
-        float meowmeraSpeed = 2.5f * deltaTime;
-
-        if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-            meowmeraSpeed *= 2.5f;
-
-        glm::vec3 movefix = glm::normalize(glm::vec3(meowmeraFront.x, 0.0f, meowmeraFront.z));
-
-        // wasdwdasddwadsdsad
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-            meowmeraPos += meowmeraSpeed * movefix;
-
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-            meowmeraPos -= meowmeraSpeed * movefix;
-
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-            meowmeraPos -= glm::normalize(glm::cross(movefix, meowmeraUp)) * meowmeraSpeed;
-
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-            meowmeraPos += glm::normalize(glm::cross(movefix, meowmeraUp)) * meowmeraSpeed;
-
-        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-            meowmeraPos += meowmeraSpeed * meowmeraUp;
-
-        if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-            meowmeraPos -= meowmeraSpeed * meowmeraUp;
     }
 }
 
@@ -628,25 +640,7 @@ void cleanupcrew(unsigned int VAO, unsigned int VBO, unsigned int EBO, unsigned 
 
 
 
-// i remember when i first actually started doing error handling
-// i thought i was doing it correctly but i just put something dumb like
-// "if (!window) return -1;" and i thought that was good enough
-// then i started thinking hmm wait i dont actually know exactly WHERE the error was
-// so i also started putting a print statement saying "glfwInit lowkey failed" or "window creation got messed up"
-// and i thought that was good enough
-
-// we all know it was not
-
-// i only started realising this after a having lot of errors and thinking to myself:
-// "so i know its broken here but i dont know WHY"
-// and then i discovered that i could actually make it say what the error was
-// like with meowinfo
-// and i thought to myself: "wow this is actually really useful"
-// and thats how we got here
-
-
-
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int main() {
     GLFWwindow* window = makeMyWindowsComeTrue();
