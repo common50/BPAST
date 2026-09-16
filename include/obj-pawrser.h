@@ -17,6 +17,14 @@ struct Meowdel {
     std::vector<unsigned int> indices;
 };
 
+
+int negIdxFix(int meow, size_t listSize) {
+    if (meow < 0) {
+        meow = static_cast<int>(listSize) + meow + 1;
+    }
+    return meow;
+}
+
 Meowdel loadObj(const char* path) {
     Meowdel model;
 
@@ -82,6 +90,7 @@ Meowdel loadObj(const char* path) {
                         faceIndices.push_back(it->second);
                     } else {
                         // defaults
+                        posIdx = negIdxFix(posIdx, positions.size());
                         glm::vec3 pos = positions[posIdx - 1];
                         model.vertexData.insert(model.vertexData.end(), {
                             pos.x, pos.y, pos.z,
@@ -105,6 +114,8 @@ Meowdel loadObj(const char* path) {
                         if (it != wafflefries.end()) {
                             faceIndices.push_back(it->second);
                         } else {
+                            posIdx = negIdxFix(posIdx, positions.size());
+                            texIdx = negIdxFix(texIdx, texCoords.size());
                             glm::vec3 pos = positions[posIdx - 1];
                             glm::vec2 tex = texCoords[texIdx - 1];
                             model.vertexData.insert(model.vertexData.end(), {
@@ -136,6 +147,8 @@ Meowdel loadObj(const char* path) {
                         if (it != wafflefries.end()) {
                                 faceIndices.push_back(it->second);
                         } else {
+                            posIdx = negIdxFix(posIdx, positions.size());
+                            normIdx = negIdxFix(normIdx, normals.size());
                             glm::vec3 pos = positions[posIdx - 1];
                             glm::vec3 norm = normals[normIdx - 1];
                             // push
@@ -172,6 +185,9 @@ Meowdel loadObj(const char* path) {
                         if (it != wafflefries.end()) {
                                 faceIndices.push_back(it->second);
                         } else {
+                            posIdx = negIdxFix(posIdx, positions.size());
+                            normIdx = negIdxFix(normIdx, normals.size());
+                            texIdx = negIdxFix(texIdx, texCoords.size());
                             glm::vec3 pos = positions[posIdx - 1];
                             glm::vec3 norm = normals[normIdx - 1];
                             glm::vec2 tex = texCoords[texIdx - 1];
