@@ -25,6 +25,37 @@ int negIdxFix(int meow, size_t listSize) {
     return meow;
 }
 
+
+// pos
+glm::vec3 butter(std::vector<glm::vec3>& positions, int meow) {
+    if (meow - 1 < 0 || meow - 1 >= static_cast<int>(positions.size())) {
+        std::cerr << "pos idx out of bounds whoops " << meow << std::endl;
+        return glm::vec3(0.0f, 0.0f, 0.0f);
+    }
+    return positions[meow - 1];
+}
+
+
+// normals
+glm::vec3 cheese(std::vector<glm::vec3>& normals, int meow) {
+    if (meow - 1 < 0 || meow - 1 >= static_cast<int>(normals.size())) {
+        std::cerr << "norm idx out of bounds whoops " << meow << std::endl;
+        return glm::vec3(0.0f, 0.0f, 0.0f);
+    }
+    return normals[meow - 1];
+}
+
+
+// tex
+glm::vec2 eggs(std::vector<glm::vec2>& texCoords, int meow) {
+    if (meow - 1 < 0 || meow - 1 >= static_cast<int>(texCoords.size())) {
+        std::cerr << "tex idx out of bounds whoops " << meow << std::endl;
+        return glm::vec2(0.0f, 0.0f);
+    }
+    return texCoords[meow - 1];
+}
+
+
 Meowdel loadObj(const char* path) {
     Meowdel model;
 
@@ -91,7 +122,7 @@ Meowdel loadObj(const char* path) {
                         faceIndices.push_back(it->second);
                     } else {
                         // defaults
-                        glm::vec3 pos = positions[posIdx - 1];
+                        glm::vec3 pos = butter(positions, posIdx);
                         model.vertexData.insert(model.vertexData.end(), {
                             pos.x, pos.y, pos.z,
                             0.7f, 0.7f, 0.7f,
@@ -116,8 +147,8 @@ Meowdel loadObj(const char* path) {
                         if (it != wafflefries.end()) {
                             faceIndices.push_back(it->second);
                         } else {
-                            glm::vec3 pos = positions[posIdx - 1];
-                            glm::vec2 tex = texCoords[texIdx - 1];
+                            glm::vec3 pos = butter(positions, posIdx);
+                            glm::vec2 tex = eggs(texCoords, texIdx);
                             model.vertexData.insert(model.vertexData.end(), {
                                 pos.x,
                                 pos.y,
@@ -148,8 +179,8 @@ Meowdel loadObj(const char* path) {
                         if (it != wafflefries.end()) {
                                 faceIndices.push_back(it->second);
                         } else {
-                            glm::vec3 pos = positions[posIdx - 1];
-                            glm::vec3 norm = normals[normIdx - 1];
+                            glm::vec3 pos = butter(positions, posIdx);
+                            glm::vec3 norm = cheese(normals, normIdx);
                             // push
                             model.vertexData.insert(model.vertexData.end(), {
                                 pos.x, pos.y, pos.z,
@@ -186,9 +217,9 @@ Meowdel loadObj(const char* path) {
                         if (it != wafflefries.end()) {
                                 faceIndices.push_back(it->second);
                         } else {
-                            glm::vec3 pos = positions[posIdx - 1];
-                            glm::vec3 norm = normals[normIdx - 1];
-                            glm::vec2 tex = texCoords[texIdx - 1];
+                            glm::vec3 pos = butter(positions, posIdx);
+                            glm::vec3 norm = cheese(normals, normIdx);
+                            glm::vec2 tex = eggs(texCoords, texIdx);
                             // pushggVG
                             model.vertexData.insert(model.vertexData.end(), {
                                 pos.x, pos.y, pos.z,
