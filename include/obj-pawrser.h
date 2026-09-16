@@ -84,13 +84,13 @@ Meowdel loadObj(const char* path) {
                 // if we dont find a slash for some reason:
                 if (firstMeow == std::string::npos) {
                     int posIdx = std::stoi(token);
+                    posIdx = negIdxFix(posIdx, positions.size());
                     std::string key = std::to_string(posIdx) + "_0_0";
                     auto it = wafflefries.find(key);
                     if (it != wafflefries.end()) {
                         faceIndices.push_back(it->second);
                     } else {
                         // defaults
-                        posIdx = negIdxFix(posIdx, positions.size());
                         glm::vec3 pos = positions[posIdx - 1];
                         model.vertexData.insert(model.vertexData.end(), {
                             pos.x, pos.y, pos.z,
@@ -104,18 +104,18 @@ Meowdel loadObj(const char* path) {
                     }
                 } else { // else if we DO find a slash
                     int posIdx = std::stoi(token.substr(0, firstMeow));
+                    posIdx = negIdxFix(posIdx, positions.size());
                     size_t secondMeow = token.find('/', firstMeow + 1);
 
                     // v/vt face fix thing
                     if (secondMeow == std::string::npos) {
                         int texIdx = std::stoi(token.substr(firstMeow + 1));
+                        texIdx = negIdxFix(texIdx, texCoords.size());
                         std::string key = std::to_string(posIdx) + "_0_" + std::to_string(texIdx);
                         auto it = wafflefries.find(key);
                         if (it != wafflefries.end()) {
                             faceIndices.push_back(it->second);
                         } else {
-                            posIdx = negIdxFix(posIdx, positions.size());
-                            texIdx = negIdxFix(texIdx, texCoords.size());
                             glm::vec3 pos = positions[posIdx - 1];
                             glm::vec2 tex = texCoords[texIdx - 1];
                             model.vertexData.insert(model.vertexData.end(), {
@@ -142,13 +142,12 @@ Meowdel loadObj(const char* path) {
 
                         // so then we take chars 1-2 which are pos and 3-4 which are norm
                         int normIdx = std::stoi(token.substr(secondMeow + 1));
+                        normIdx = negIdxFix(normIdx, normals.size());
                         std::string key = std::to_string(posIdx) + "_" + std::to_string(normIdx) + "_0";
                         auto it = wafflefries.find(key); // dont ask me what auto means
                         if (it != wafflefries.end()) {
                                 faceIndices.push_back(it->second);
                         } else {
-                            posIdx = negIdxFix(posIdx, positions.size());
-                            normIdx = negIdxFix(normIdx, normals.size());
                             glm::vec3 pos = positions[posIdx - 1];
                             glm::vec3 norm = normals[normIdx - 1];
                             // push
@@ -172,6 +171,7 @@ Meowdel loadObj(const char* path) {
 
                         // first we go find the texcoord and subtract:
                         int texIdx = std::stoi(token.substr(firstMeow + 1, secondMeow - firstMeow - 1));
+                        texIdx = negIdxFix(texIdx, texCoords.size());
 
                         // so we make it look like this:
                         // 1 2   3 4
@@ -180,14 +180,12 @@ Meowdel loadObj(const char* path) {
 
                         // and then we do it as if there is no texcoord (since we skip the texcoord ofc)
                         int normIdx = std::stoi(token.substr(secondMeow + 1));
+                        normIdx = negIdxFix(normIdx, normals.size());
                         std::string key = std::to_string(posIdx) + "_" + std::to_string(normIdx) + "_" + std::to_string(texIdx);
                         auto it = wafflefries.find(key);
                         if (it != wafflefries.end()) {
                                 faceIndices.push_back(it->second);
                         } else {
-                            posIdx = negIdxFix(posIdx, positions.size());
-                            normIdx = negIdxFix(normIdx, normals.size());
-                            texIdx = negIdxFix(texIdx, texCoords.size());
                             glm::vec3 pos = positions[posIdx - 1];
                             glm::vec3 norm = normals[normIdx - 1];
                             glm::vec2 tex = texCoords[texIdx - 1];
