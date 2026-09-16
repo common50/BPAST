@@ -24,7 +24,8 @@ Meowdel loadObj(const char* path) {
     std::vector<glm::vec3> normals;
     std::vector<glm::vec2> texCoords;
 
-    std::unordered_map<std::string, unsigned int> combinedLookup; // where does this one go??? ehh whatever it works
+    // comblup for vert indices
+    std::unordered_map<std::string, unsigned int> wafflefries; // where does this one go??? ehh whatever it works
 
     std::ifstream file(path);
     if (!file.is_open()) {
@@ -76,8 +77,8 @@ Meowdel loadObj(const char* path) {
                 if (firstMeow == std::string::npos) {
                     int posIdx = std::stoi(token);
                     std::string key = std::to_string(posIdx) + "_0_0";
-                    auto it = combinedLookup.find(key);
-                    if (it != combinedLookup.end()) {
+                    auto it = wafflefries.find(key);
+                    if (it != wafflefries.end()) {
                         faceIndices.push_back(it->second);
                     } else {
                         // defaults
@@ -89,15 +90,36 @@ Meowdel loadObj(const char* path) {
                             0.0f, 0.0f
                         });
                         unsigned int newIndex = (unsigned int)(model.vertexData.size() / 11 - 1);
-                        combinedLookup[key] = newIndex;
+                        wafflefries[key] = newIndex;
                         faceIndices.push_back(newIndex);
                     }
                 } else { // else if we DO find a slash
                     int posIdx = std::stoi(token.substr(0, firstMeow));
                     size_t secondMeow = token.find('/', firstMeow + 1);
 
-                    // now we check the shape, whether its 1//3 or 1/2/3
-                    if (secondMeow == firstMeow + 1) { // check if the slashes are adjecent
+                    // v/vt face fix thing
+                    if (secondMeow == std::string::npos) {
+                        int texIdx = std::stoi(token.substr(firstMeow + 1));
+                        std::string key = std::to_string(posIdx) + "_0_" + std::to_string(texIdx);
+                        auto it = wafflefries.find(key);
+                        if (it != wafflefries.end()) {
+                            faceIndices.push_back(it->second);
+                        } else {
+                            glm::vec3 pos = positions[posIdx - 1];
+                            glm::vec2 tex = texCoords[texIdx - 1];
+                            model.vertexData.insert(model.vertexData.end(), {
+                                pos.x,
+                                pos.y,
+                                pos.z,
+                                0.7f, 0.7f, 0.7f,
+                                0.0f, 1.0f, 0.0f,
+                                tex.x, tex.y
+                            });
+                            unsigned int newIndex = (unsigned int)(model.vertexData.size() / 11 - 1);
+                            wafflefries[key] = newIndex;
+                            faceIndices.push_back(newIndex);
+                        }
+                    } else if (secondMeow == firstMeow + 1) {
 
                         // if this is true there is no texcoord
                         // this means that the shape is 1//3 (cus the slashes are adjecent)
@@ -110,8 +132,8 @@ Meowdel loadObj(const char* path) {
                         // so then we take chars 1-2 which are pos and 3-4 which are norm
                         int normIdx = std::stoi(token.substr(secondMeow + 1));
                         std::string key = std::to_string(posIdx) + "_" + std::to_string(normIdx) + "_0";
-                        auto it = combinedLookup.find(key); // dont ask me what auto means
-                        if (it != combinedLookup.end()) {
+                        auto it = wafflefries.find(key); // dont ask me what auto means
+                        if (it != wafflefries.end()) {
                                 faceIndices.push_back(it->second);
                         } else {
                             glm::vec3 pos = positions[posIdx - 1];
@@ -124,7 +146,7 @@ Meowdel loadObj(const char* path) {
                                 0.5f, 0.5f
                             });
                             unsigned int newIndex = (unsigned int)(model.vertexData.size() / 11 - 1);
-                            combinedLookup[key] = newIndex;
+                            wafflefries[key] = newIndex;
                             faceIndices.push_back(newIndex);
                         }
 
@@ -146,8 +168,8 @@ Meowdel loadObj(const char* path) {
                         // and then we do it as if there is no texcoord (since we skip the texcoord ofc)
                         int normIdx = std::stoi(token.substr(secondMeow + 1));
                         std::string key = std::to_string(posIdx) + "_" + std::to_string(normIdx) + "_" + std::to_string(texIdx);
-                        auto it = combinedLookup.find(key);
-                        if (it != combinedLookup.end()) {
+                        auto it = wafflefries.find(key);
+                        if (it != wafflefries.end()) {
                                 faceIndices.push_back(it->second);
                         } else {
                             glm::vec3 pos = positions[posIdx - 1];
@@ -162,7 +184,7 @@ Meowdel loadObj(const char* path) {
                             });
 
                             unsigned int newIndex = (unsigned int)(model.vertexData.size() / 11 - 1);
-                            combinedLookup[key] = newIndex;
+                            wafflefries[key] = newIndex;
                             faceIndices.push_back(newIndex);
                         }
                     }
