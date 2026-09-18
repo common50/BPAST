@@ -1,7 +1,7 @@
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Iinclude
+CXXFLAGS = -std=c++17 -Wall -Iinclude -Ithird_party/glad/include -Ithird_party/glm/include -Ithird_party/stb/include
 
-SRC = src/main.cpp src/glad.c
+SRC = src/main.cpp third_party/glad/src/glad.c
 
 ifeq ($(OS),Windows_NT)
 	OUT = BPAST.exe
