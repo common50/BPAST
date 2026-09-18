@@ -25,84 +25,6 @@ extern "C" {
 
 
 
-
-
-
-// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX verticies n stuff XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
-// TO DO: remove this stuff and use .obj files instead
-
-// i gotta stop hardcoding stuff
-
-// spinning colored cube thing object whatever it is
-// 3 pos, 3 color and 2 texcoord values for each n every lil vertex
-float vertices[] = {
-// pos                  color              normal
-// back (-z)
--0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,   0.0f, 0.0f, -1.0f,
- 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,   0.0f, 0.0f, -1.0f,
- 0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f,   0.0f, 0.0f, -1.0f,
--0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.0f,   0.0f, 0.0f, -1.0f,
-// front (+z)
--0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 1.0f,   0.0f, 0.0f, 1.0f,
- 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 1.0f,   0.0f, 0.0f, 1.0f,
- 0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 1.0f,   0.0f, 0.0f, 1.0f,
--0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 0.0f,   0.0f, 0.0f, 1.0f,
-// left (-x)
--0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,  -1.0f, 0.0f, 0.0f,
--0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 1.0f,  -1.0f, 0.0f, 0.0f,
--0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 0.0f,  -1.0f, 0.0f, 0.0f,
--0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.0f,  -1.0f, 0.0f, 0.0f,
-// right (+x)
- 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,   1.0f, 0.0f, 0.0f,
- 0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f,   1.0f, 0.0f, 0.0f,
- 0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 1.0f,   1.0f, 0.0f, 0.0f,
- 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 1.0f,   1.0f, 0.0f, 0.0f,
-// bottom (-y)
--0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,   0.0f, -1.0f, 0.0f,
- 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,   0.0f, -1.0f, 0.0f,
- 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 1.0f,   0.0f, -1.0f, 0.0f,
--0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 1.0f,   0.0f, -1.0f, 0.0f,
-// top (+y)
--0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 0.0f,   0.0f, 1.0f, 0.0f,
- 0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f,   0.0f, 1.0f, 0.0f,
- 0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 1.0f,   0.0f, 1.0f, 0.0f,
--0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 0.0f,   0.0f, 1.0f, 0.0f,
-// its so hard to keep track of this stuff
-};
-
-// indecies n stuff
-// so basically saying draw the triangles like *this*
-unsigned int indices[] = {
-    0, 1, 2,    2, 3, 0,
-    4, 5, 6,    6, 7, 4,
-    8, 9, 10,   10, 11, 8,
-    12, 13, 14, 14, 15, 12,
-    16, 17, 18, 18, 19, 16,
-    20, 21, 22, 22, 23, 20
-
-};
-
-// platform
-float meowndVertices[] = {
-    //   pos                     color              normal              texcoord
-    -10.0f, -1.0f, -10.0f,   0.2f, 0.2f, 0.25f,   0.0f, 1.0f, 0.0f,   0.0f, 1.0f,
-     10.0f, -1.0f, -10.0f,   0.2f, 0.2f, 0.25f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f,
-     10.0f, -1.0f,  10.0f,   0.2f, 0.2f, 0.25f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
-    -10.0f, -1.0f,  10.0f,   0.2f, 0.2f, 0.25f,   0.0f, 1.0f, 0.0f,   0.0f, 0.0f
-};
-
-unsigned int meowndIndices[] = {
-    0, 1, 2,
-    2, 3, 0
-};
-
-// """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-
-
-
-
 // shader source strings or wtv its called im still not sure how it works
 // vertex shader:
 const char* vertexShaderSource = R"(
@@ -417,68 +339,12 @@ unsigned int textureThing(const char* path) {
 }
 
 
-// platform thing
-void platformbs(unsigned int& meowndVAO, unsigned int& meowndVBO, unsigned int& meowndEBO) { // bs and buffer setup at the same time
-    glGenVertexArrays(1, &meowndVAO);
-    glGenBuffers(1, &meowndVBO);
-    glGenBuffers(1, &meowndEBO);
-
-    glBindVertexArray(meowndVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, meowndVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(meowndVertices), meowndVertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meowndEBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(meowndIndices), meowndIndices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(9 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-
-    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(3);
-}
-
-
-// lowk gotta delete this
-void spinningRainbowCube(unsigned int& VAO, unsigned int& VBO, unsigned int& EBO) {
-
-    // was gonna name em sum stupid like meowVAO n meowVBO
-    // but maybe not they seem too important to be named like that
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
-
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(3);
-
-    glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(9 * sizeof(float)));
-    glEnableVertexAttribArray(4);
-}
-
-
 void timething() {
     float purrentFrame = (float)glfwGetTime();
     deltaTime = purrentFrame - lastFrame;
     lastFrame = purrentFrame;
 }
+
 
 void toggleKeys(GLFWwindow* window) {
     static bool tabWasPressed = false;
@@ -538,9 +404,10 @@ void meowmeraMove(GLFWwindow* window, float deltaTime) {
            meowmeraPos -= meowmeraSpeed * meowmeraUp;
 }
 
+
 // main loop for rendering and stuff
-void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO, unsigned int meowndVAO, unsigned int meowndTexture, unsigned int modelVAO, unsigned int modelIndexCount) {
-    while (!glfwWindowShouldClose(window)) { // who named this dawg
+void loopsoup(GLFWwindow* window, unsigned int shaderProgram, std::vector<MeowObject>& sceneObjects) {
+    while (!glfwWindowShouldClose(window)) {
         timething();
         toggleKeys(window);
         meowmeraMove(window, deltaTime);
@@ -550,15 +417,9 @@ void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO, 
 
         glUseProgram(shaderProgram);
 
-        glm::mat4 meowdel = glm::mat4(1.0f);
-
-        meowdel = glm::rotate(meowdel, (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
-
         glm::mat4 miew = glm::lookAt(meowmeraPos, meowmeraPos + meowmeraFront, meowmeraUp);
-
         glm::mat4 meowjection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
 
-        glUniformMatrix4fv(u.meowdel, 1, GL_FALSE, glm::value_ptr(meowdel));
         glUniformMatrix4fv(u.miew, 1, GL_FALSE, glm::value_ptr(miew));
         glUniformMatrix4fv(u.meowjection, 1, GL_FALSE, glm::value_ptr(meowjection));
 
@@ -567,34 +428,19 @@ void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO, 
         glUniform3f(u.lightCol, 1.0f, 1.0f, 1.0f);
         glUniform3f(u.viewPaws, meowmeraPos.x, meowmeraPos.y, meowmeraPos.z);
         glUniform1f(u.meownCutOff, cos(glm::radians(12.5f)));
-        glUniform1f(u.meowterCutOff, cos(glm::radians(17.5f))); // standard angles cus im unoriginal
-
-        glUniform1i(u.huhTexture, false);
-
+        glUniform1f(u.meowterCutOff, cos(glm::radians(17.5f)));
         glUniform1i(u.crashLightOn, crashLightOn);
 
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-
-        glm::mat4 meowndModel = glm::mat4(1.0f);
-
-        glUniformMatrix4fv(u.meowdel, 1, GL_FALSE, glm::value_ptr(meowndModel));
-
-        glUniform1i(u.huhTexture, true);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, meowndTexture);
-
-        glBindVertexArray(meowndVAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-        glm::mat4 idk = glm::mat4(1.0f);
-        idk = glm::translate(idk, glm::vec3(2.0f, 0.0f, 0.0f)); // shove it off to the side so it wont the cube
-
-        glUniformMatrix4fv(u.meowdel, 1, GL_FALSE, glm::value_ptr(idk));
-        glUniform1i(u.huhTexture, false); //d
-
-        glBindVertexArray(modelVAO);
-        glDrawElements(GL_TRIANGLES, modelIndexCount, GL_UNSIGNED_INT, 0);
+        for (MeowObject& obj : sceneObjects) {
+            glUniformMatrix4fv(u.meowdel, 1, GL_FALSE, glm::value_ptr(obj.modelMatrix));
+            glUniform1i(u.huhTexture, obj.useTexture);
+            if (obj.useTexture) {
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, obj.textureID);
+            }
+            glBindVertexArray(obj.VAO);
+            glDrawElements(GL_TRIANGLES, obj.indexCount, GL_UNSIGNED_INT, 0);
+        }
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -602,16 +448,15 @@ void loopsoup(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO, 
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             glfwSetWindowShouldClose(window, true);
         }
-
     }
 }
 
 
 // "free my boy ram he aint do nun"
-void cleanupcrew(unsigned int VAO, unsigned int VBO, unsigned int EBO, unsigned int shaderProgram, GLFWwindow* window) {
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
+void cleanupcrew(std::vector<MeowObject>& sceneObjects, unsigned int shaderProgram, GLFWwindow* window) {
+    for (MeowObject& obj : sceneObjects) {
+        glDeleteVertexArrays(1, &obj.VAO);
+    }
     glDeleteProgram(shaderProgram);
     glfwTerminate();
 }
@@ -645,26 +490,21 @@ int main() {
     u.crashLightOn = glGetUniformLocation(shaderProgram, "crashLightOn");
 
 
-    unsigned int VAO, VBO, EBO;
-    spinningRainbowCube(VAO, VBO, EBO);
-
-    unsigned int meowndVAO, meowndVBO, meowndEBO;
-    platformbs(meowndVAO, meowndVBO, meowndEBO);
-
     unsigned int meowndTexture = textureThing("assets/textures/garden.jpg");
+
+    std::vector<MeowObject> sceneObjects;
+    sceneObjects.push_back(loadSceneObject("assets/models/rainbowcube.obj", false, 0));
+    sceneObjects.push_back(loadSceneObject("assets/models/meownd.obj", true, meowndTexture));
+    sceneObjects.push_back(loadSceneObject("assets/models/mittest.obj", false, 0));
+
+    sceneObjects[2].modelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 0.0f, 0.0f));
 
     // versioj check cus ppl tend to mess version stuff up and i alwaus need to fix it for them
     std::cout << "current version " << glGetString(GL_VERSION) << std::endl;
 
-    // pawrser test
-    Meowdel testModel = loadObj("assets/models/mittest.obj"); //d
+    loopsoup(window, shaderProgram, sceneObjects);
 
-    unsigned int modelVAO, modelVBO, modelEBO;
-    GPUseless(testModel, modelVAO, modelVBO, modelEBO);
-
-    loopsoup(window, shaderProgram, VAO, meowndVAO, meowndTexture, modelVAO, (unsigned int)testModel.indices.size());
-
-    cleanupcrew(VAO, VBO, EBO, shaderProgram, window);
+    cleanupcrew(sceneObjects, shaderProgram, window);
     return 0;
 }
 
