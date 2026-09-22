@@ -3,7 +3,6 @@
 
 // 2 lines for functions else ill go insane
 
-// git isnt committing properly so im putting this comment rq imma delete this
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
