@@ -109,12 +109,7 @@ void main() {
 // but dont mess with my global vars
 
     // camera stuff ----------------------------------------
-    glm::vec3 meowmeraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-    glm::vec3 meowmeraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-    glm::vec3 meowmeraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
-    float myaw = -90.0f;
-    float meowch = 0.0f; // (yaw n pitch for the record im just bored and this is a good way to pass time)
+    meowmera meowmera;
 
 
 
@@ -163,13 +158,11 @@ void main() {
 
 
 // mouse stuff
-void chasingMice(GLFWwindow* window, double xposIN, double yposIN) {
-
+void meowseCB(GLFWwindow* window, double xpawsin, double ypawsin) {
     if (!meowsorLocked) return;
 
-    // pos
-    float meowx = static_cast<float>(xposIN); // because apparently c style casting gets you a lot of flak
-    float meowy = static_cast<float>(yposIN);
+    float meowx = static_cast<float>(xpawsin);
+    float meowy = static_cast<float>(ypawsin);
 
     if (firstmeowse) {
         lastXmeowse = meowx;
@@ -178,32 +171,12 @@ void chasingMice(GLFWwindow* window, double xposIN, double yposIN) {
     }
 
     float meoffsetX = meowx - lastXmeowse;
-    float meoffsetY = lastYmeowse - meowy; // flipped cus coords go from top to bottom
+    float meoffsetY = lastYmeowse - meowy;
 
     lastXmeowse = meowx;
     lastYmeowse = meowy;
 
-    float nonsense = 0.1f;
-
-    meoffsetX *= nonsense;
-    meoffsetY *= nonsense;
-
-    myaw += meoffsetX;
-    meowch += meoffsetY;
-
-    // i almost forgot to clamp
-    if (meowch > 89.0f) meowch = 89.0f;
-    if (meowch < -89.0f) meowch = -89.0f;
-
-    // lowkey kinda copied the spherical coordinate math from somewhere but who cares
-    // cus there is NO WAY im deriving this myself lol
-    glm::vec3 meowection;
-    meowection.x = cos(glm::radians(myaw)) * cos(glm::radians(meowch));
-    meowection.y = sin(glm::radians(meowch));
-    meowection.z = sin(glm::radians(myaw)) * cos(glm::radians(meowch));
-
-    // also almost forgot abt normalization
-    meowmeraFront = glm::normalize(meowection);
+    meowmera.chasingMice(meoffsetX, meoffsetY);
 }
 
 
@@ -237,7 +210,7 @@ GLFWwindow* makeMyWindowsComeTrue() {
     glfwMakeContextCurrent(window);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwSetCursorPosCallback(window, chasingMice);
+    glfwSetCursorPosCallback(window, meowseCB);
 
     glfwSetFramebufferSizeCallback(window, huh); // resize fix, ignore ts
 
@@ -379,34 +352,17 @@ void toggleKeys(GLFWwindow* window) {
 }
 
 void meowmeraMove(GLFWwindow* window, float deltaTime) {
-    float meowmeraSpeed = 2.5f * deltaTime;
-
-    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-        meowmeraSpeed *= 2.5f;
-
-
-    glm::vec3 meowfix = glm::normalize(glm::vec3(meowmeraFront.x, 0.0f, meowmeraFront.z));
-
-    // wasdwdasddwadsdsad
-       if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-           meowmeraPos += meowmeraSpeed * meowfix;
-
-       if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-           meowmeraPos -= meowmeraSpeed * meowfix;
-
-       if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-           meowmeraPos -= glm::normalize(glm::cross(meowfix, meowmeraUp)) * meowmeraSpeed;
-
-       if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-           meowmeraPos += glm::normalize(glm::cross(meowfix, meowmeraUp)) * meowmeraSpeed;
-
-       if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-           meowmeraPos += meowmeraSpeed * meowmeraUp;
-
-       if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-           meowmeraPos -= meowmeraSpeed * meowmeraUp;
+    meowmera.meowmeraMove(
+        glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS,
+        glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS,
+        glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS,
+        glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS,
+        glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS,
+        glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS,
+        glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS,
+        deltaTime
+    );
 }
-
 
 // main loop for rendering and stuff
 void loopsoup(GLFWwindow* window, unsigned int shaderProgram, std::vector<MeowObject>& sceneObjects) {
@@ -420,16 +376,16 @@ void loopsoup(GLFWwindow* window, unsigned int shaderProgram, std::vector<MeowOb
 
         glUseProgram(shaderProgram);
 
-        glm::mat4 miew = glm::lookAt(meowmeraPos, meowmeraPos + meowmeraFront, meowmeraUp);
+        glm::mat4 miew = meowmera.getViewMatrix();
         glm::mat4 meowjection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
 
         glUniformMatrix4fv(u.miew, 1, GL_FALSE, glm::value_ptr(miew));
         glUniformMatrix4fv(u.meowjection, 1, GL_FALSE, glm::value_ptr(meowjection));
 
-        glUniform3f(u.lightPaws, meowmeraPos.x, meowmeraPos.y, meowmeraPos.z);
-        glUniform3f(u.lightDir, meowmeraFront.x, meowmeraFront.y, meowmeraFront.z);
+        glUniform3f(u.lightPaws, meowmera.paws.x, meowmera.paws.y, meowmera.paws.z);
+        glUniform3f(u.lightDir, meowmera.front.x, meowmera.front.y, meowmera.front.z);
         glUniform3f(u.lightCol, 1.0f, 1.0f, 1.0f);
-        glUniform3f(u.viewPaws, meowmeraPos.x, meowmeraPos.y, meowmeraPos.z);
+        glUniform3f(u.viewPaws, meowmera.paws.x, meowmera.paws.y, meowmera.paws.z);
         glUniform1f(u.meownCutOff, cos(glm::radians(12.5f)));
         glUniform1f(u.meowterCutOff, cos(glm::radians(17.5f)));
         glUniform1i(u.crashLightOn, crashLightOn);

@@ -48,7 +48,7 @@ public:
     }
 
     // fyi prsd = pressed cus i dont want long var names they tire out my poor fingers
-    void meowermaMove(float Wprsd, float Sprsd, float Aprsd, float Dprsd,
+    void meowmeraMove(float Wprsd, float Sprsd, float Aprsd, float Dprsd,
         float Spaceprsd, float Ctrlprsd, float Shiftprsd, float deltaTime) {
 
         float fritters = 2.5f * deltaTime; // speed
