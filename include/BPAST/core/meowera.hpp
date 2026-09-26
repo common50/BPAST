@@ -52,8 +52,15 @@ public:
         float Spaceprsd, float Ctrlprsd, float Shiftprsd, float deltaTime) {
 
         float fritters = 2.5f * deltaTime; // speed
-        if(Shiftprsd) fritters *= 2.5f;
+        if (Shiftprsd) fritters *= 2.5f;
 
+        glm::vec3 flatFront = glm::normalize(glm::vec3(front.x, 0.0f, front.z));
 
+        if (Wprsd) paws += fritters * flatFront;
+        if (Sprsd) paws -= fritters * flatFront;
+        if (Aprsd) paws -= glm::normalize(glm::cross(flatFront, up)) * fritters;
+        if (Dprsd) paws += glm::normalize(glm::cross(flatFront, up)) * fritters;
+        if (Spaceprsd) paws += fritters * up;
+        if (Ctrlprsd) paws -= fritters * up;
     }
 };
