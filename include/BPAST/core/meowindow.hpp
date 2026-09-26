@@ -34,6 +34,7 @@ public:
         glfwMakeContextCurrent(paw);
         glfwSetWindowUserPointer(paw, this);
 
+        // idk how lambdas work
         glfwSetFramebufferSizeCallback(paw, [](GLFWwindow* window, int newMeowidth, int newMeowght) {
             meowindow* toast = static_cast<meowindow*>(glfwGetWindowUserPointer(window));
             glViewport(0, 0, newMeowidth, newMeowght);
@@ -50,6 +51,25 @@ public:
         glEnable(GL_DEPTH_TEST);
     }
 
+    bool isValid() const {
+        return paw != nullptr;
+    }
+
+    bool shouldClose() const {
+        return glfwWindowShouldClose(paw);
+    }
+
+    void swapBuffers() {
+        glfwSwapBuffers(paw);
+    }
+
+    void pollEvents() {
+        glfwPollEvents();
+    }
+
+    float aspectRatio() const {
+        return static_cast<float>(meowidth) / static_cast<float>(meowght);
+    }
 
 
 };
