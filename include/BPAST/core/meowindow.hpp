@@ -43,9 +43,11 @@ public:
 
         if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
             std::cerr << "gladLoadGLLoader failed, do better next time i dont hav all day" << std::endl;
+            paw = nullptr;
             return;
         }
 
+        glEnable(GL_DEPTH_TEST);
     }
 
 
