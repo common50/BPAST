@@ -17,6 +17,7 @@
 // bpast ******
 #include <BPAST/scene/SceneObj.hpp>
 #include <BPAST/core/meowmera.hpp>
+#include <BPAST/core/meowindow.hpp>
 // bpast ******
 
 #ifdef _WIN32
@@ -131,10 +132,12 @@ void main() {
     float lastFrame = 0.0f; // couldnt come up with some corny name so just left it like this
 
 
-
     // window stuff ---------------------------------------
-    int windowWidth = 800;
-    int windowHeight = 600; // too important for dumb names
+    meowindow window(800, 600, "BPAST");
+    if(!window.isValid()) {
+        return -1;
+    }
+
 
     // uniforms -------------------------------------------
     struct MeowNiforms {
@@ -179,51 +182,6 @@ void meowseCB(GLFWwindow* window, double xpawsin, double ypawsin) {
     lastYmeowse = meowy;
 
     meowmera.chasingMice(meoffsetX, meoffsetY);
-}
-
-
-// resize fix thing dont worry skip over this
-void huh(GLFWwindow* window, int realmeowidth, int realmeowght) { // meowwwww
-    glViewport(0, 0, realmeowidth, realmeowght);
-    windowWidth = realmeowidth;
-    windowHeight = realmeowght;
-}
-
-
-// make window and context and stuff
-GLFWwindow* makeMyWindowsComeTrue() {
-    if (!glfwInit()) {
-        std::cerr << "yo glfwInit failed haha good luck" << std::endl;
-        return nullptr;
-    }
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    GLFWwindow* window = glfwCreateWindow(800, 600, "BPAST", nullptr, nullptr);
-
-    if (!window) {
-        std::cerr << "yo the window isnt working gang helppppp" << std::endl;
-        glfwTerminate();
-        return nullptr;
-    }
-
-    glfwMakeContextCurrent(window);
-
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwSetCursorPosCallback(window, meowseCB);
-
-    glfwSetFramebufferSizeCallback(window, huh); // resize fix, ignore ts
-
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        std::cerr << "gladLoadGLLoader failed, do better next time i dont hav all day" << std::endl;
-        return nullptr;
-    }
-
-    glEnable(GL_DEPTH_TEST);
-
-    return window;
 }
 
 
