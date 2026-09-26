@@ -44,11 +44,20 @@ public:
 
         if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
             std::cerr << "gladLoadGLLoader failed, do better next time i dont hav all day" << std::endl;
+            glfwDestroyWindow(paw);
+            glfwTerminate();
             paw = nullptr;
             return;
         }
 
         glEnable(GL_DEPTH_TEST);
+    }
+
+    ~meowindow() {
+        if(paw) {
+            glfwDestroyWindow(paw);
+        }
+        glfwTerminate();
     }
 
     bool isValid() const {
@@ -65,6 +74,23 @@ public:
 
     void pollEvents() {
         glfwPollEvents();
+    }
+
+    // mouse stuff n keys
+    void setCursorPosCallback(GLFWcursorposfun callback) {
+        glfwSetCursorPosCallback(paw, callback);
+    }
+
+    void setCursorLocked(bool locked) {
+        glfwSetInputMode(paw, GLFW_CURSOR, locked ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+    }
+
+    bool isKeyPressed(int key) const {
+        return glfwGetKey(paw, key) == GLFW_PRESS;
+    }
+
+    void requestClose() {
+        glfwSetWindowShouldClose(paw, true);
     }
 
     float aspectRatio() const {

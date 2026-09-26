@@ -133,10 +133,7 @@ void main() {
 
 
     // window stuff ---------------------------------------
-    meowindow window(800, 600, "BPAST");
-    if(!window.isValid()) {
-        return -1;
-    }
+    meowindow window(800, 600, "BPAST"); // if it breaks it breaks, checked in main
 
 
     // uniforms -------------------------------------------
@@ -282,17 +279,13 @@ void timething() {
 }
 
 
-void toggleKeys(GLFWwindow* window) {
+void toggleKeys(meowindow& window) {
     static bool tabWasPressed = false;
-            if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS) {
+            if (window.isKeyPressed(GLFW_KEY_TAB)) {
                 if (!tabWasPressed) {
                     meowsorLocked = !meowsorLocked;
-                    if (meowsorLocked) {
-                        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-                        firstmeowse = true;
-                    } else {
-                        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-                    }
+                    window.setCursorLocked(meowsorLocked);
+                    firstmeowse = true;
                 } // yay so many curly braces
                 tabWasPressed = true;
             } else {
@@ -300,7 +293,7 @@ void toggleKeys(GLFWwindow* window) {
             }
 
             static bool fWasPressed = false;
-            if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
+            if (window.isKeyPressed(GLFW_KEY_F)) {
                 if (!fWasPressed) {
                     crashLightOn = !crashLightOn;
                 }
@@ -311,22 +304,22 @@ void toggleKeys(GLFWwindow* window) {
 
 }
 
-void meowmeraMove(GLFWwindow* window, float deltaTime) {
+void meowmeraMove(meowindow& window, float deltaTime) {
     meowmera.meowmeraMove(
-        glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS,
-        glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS,
-        glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS,
-        glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS,
-        glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS,
-        glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS,
-        glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS,
+        window.isKeyPressed(GLFW_KEY_W),
+        window.isKeyPressed(GLFW_KEY_S),
+        window.isKeyPressed(GLFW_KEY_A),
+        window.isKeyPressed(GLFW_KEY_D),
+        window.isKeyPressed(GLFW_KEY_SPACE),
+        window.isKeyPressed(GLFW_KEY_LEFT_CONTROL),
+        window.isKeyPressed(GLFW_KEY_LEFT_SHIFT),
         deltaTime
     );
 }
 
 // main loop for rendering and stuff
-void loopsoup(GLFWwindow* window, unsigned int shaderProgram, std::vector<MeowObject>& sceneObjects) {
-    while (!glfwWindowShouldClose(window)) {
+void loopsoup(meowindow& window, unsigned int shaderProgram, std::vector<MeowObject>& sceneObjects) {
+    while (!window.shouldClose()) {
         timething();
         toggleKeys(window);
         meowmeraMove(window, deltaTime);
@@ -337,7 +330,7 @@ void loopsoup(GLFWwindow* window, unsigned int shaderProgram, std::vector<MeowOb
         glUseProgram(shaderProgram);
 
         glm::mat4 miew = meowmera.getViewMatrix();
-        glm::mat4 meowjection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
+        glm::mat4 meowjection = glm::perspective(glm::radians(45.0f), window.aspectRatio(), 0.1f, 100.0f);
 
         glUniformMatrix4fv(u.miew, 1, GL_FALSE, glm::value_ptr(miew));
         glUniformMatrix4fv(u.meowjection, 1, GL_FALSE, glm::value_ptr(meowjection));
@@ -361,23 +354,22 @@ void loopsoup(GLFWwindow* window, unsigned int shaderProgram, std::vector<MeowOb
             glDrawElements(GL_TRIANGLES, obj.indexCount, GL_UNSIGNED_INT, 0);
         }
 
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+        window.swapBuffers();
+        window.pollEvents();
 
-        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-            glfwSetWindowShouldClose(window, true);
+        if (window.isKeyPressed(GLFW_KEY_ESCAPE)) {
+            window.requestClose();
         }
     }
 }
 
 
 // "free my boy ram he aint do nun"
-void cleanupcrew(std::vector<MeowObject>& sceneObjects, unsigned int shaderProgram, GLFWwindow* window) {
+void cleanupcrew(std::vector<MeowObject>& sceneObjects, unsigned int shaderProgram) {
     for (MeowObject& obj : sceneObjects) {
         glDeleteVertexArrays(1, &obj.VAO);
     }
     glDeleteProgram(shaderProgram);
-    glfwTerminate();
 }
 
 
@@ -387,8 +379,10 @@ void cleanupcrew(std::vector<MeowObject>& sceneObjects, unsigned int shaderProgr
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int main() {
-    GLFWwindow* window = makeMyWindowsComeTrue();
-    if (!window) return -1;
+    if (!window.isValid()) return -1;
+
+    window.setCursorPosCallback(meowseCB);
+    window.setCursorLocked(true); // mouse look starts locked like it always did
 
     unsigned int shaderProgram = createMeowProgram();
 
@@ -423,7 +417,7 @@ int main() {
 
     loopsoup(window, shaderProgram, sceneObjects);
 
-    cleanupcrew(sceneObjects, shaderProgram, window);
+    cleanupcrew(sceneObjects, shaderProgram);
     return 0;
 }
 
