@@ -132,9 +132,6 @@ void main() {
     float lastFrame = 0.0f; // couldnt come up with some corny name so just left it like this
 
 
-    // window stuff ---------------------------------------
-    meowindow window(800, 600, "BPAST"); // if it breaks it breaks, checked in main
-
 
     // uniforms -------------------------------------------
     struct MeowNiforms {
@@ -281,27 +278,24 @@ void timething() {
 
 void toggleKeys(meowindow& window) {
     static bool tabWasPressed = false;
-            if (window.isKeyPressed(GLFW_KEY_TAB)) {
-                if (!tabWasPressed) {
-                    meowsorLocked = !meowsorLocked;
-                    window.setCursorLocked(meowsorLocked);
-                    firstmeowse = true;
-                } // yay so many curly braces
-                tabWasPressed = true;
-            } else {
-                tabWasPressed = false;
-            }
+    if (window.isKeyPressed(GLFW_KEY_TAB)) {
+        if (!tabWasPressed) {
+            meowsorLocked = !meowsorLocked;
+            window.setCursorLocked(meowsorLocked);
+            if (meowsorLocked) firstmeowse = true;
+        }
+        tabWasPressed = true;
+    } else {
+        tabWasPressed = false;
+    }
 
-            static bool fWasPressed = false;
-            if (window.isKeyPressed(GLFW_KEY_F)) {
-                if (!fWasPressed) {
-                    crashLightOn = !crashLightOn;
-                }
-                fWasPressed = true;
-            } else {
-                fWasPressed = false;
-            }
-
+    static bool fWasPressed = false;
+    if (window.isKeyPressed(GLFW_KEY_F)) {
+        if (!fWasPressed) crashLightOn = !crashLightOn;
+        fWasPressed = true;
+    } else {
+        fWasPressed = false;
+    }
 }
 
 void meowmeraMove(meowindow& window, float deltaTime) {
@@ -317,7 +311,6 @@ void meowmeraMove(meowindow& window, float deltaTime) {
     );
 }
 
-// main loop for rendering and stuff
 void loopsoup(meowindow& window, unsigned int shaderProgram, std::vector<MeowObject>& sceneObjects) {
     while (!window.shouldClose()) {
         timething();
@@ -374,15 +367,14 @@ void cleanupcrew(std::vector<MeowObject>& sceneObjects, unsigned int shaderProgr
 
 
 
-
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int main() {
+    meowindow window(800, 600, "BPAST");
     if (!window.isValid()) return -1;
 
+    window.setCursorLocked(true);
     window.setCursorPosCallback(meowseCB);
-    window.setCursorLocked(true); // mouse look starts locked like it always did
 
     unsigned int shaderProgram = createMeowProgram();
 
@@ -418,6 +410,7 @@ int main() {
     loopsoup(window, shaderProgram, sceneObjects);
 
     cleanupcrew(sceneObjects, shaderProgram);
+
     return 0;
 }
 
