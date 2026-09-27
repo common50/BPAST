@@ -19,6 +19,7 @@
 #include <BPAST/core/meowmera.hpp>
 #include <BPAST/core/meowindow.hpp>
 #include <BPAST/core/meowse.hpp>
+#include <BPAST/core/meowtime.hpp>
 // bpast ******
 
 #ifdef _WIN32
@@ -124,8 +125,7 @@ void main() {
 
 
     // frame timing stuff ---------------------------------
-    float deltaTime = 0.0f;
-    float lastFrame = 0.0f; // couldnt come up with some corny name so just left it like this
+    meowtime meowtime;
 
 
 
@@ -249,13 +249,6 @@ unsigned int textureThing(const char* path) {
 }
 
 
-void timething() {
-    float purrentFrame = (float)glfwGetTime();
-    deltaTime = purrentFrame - lastFrame;
-    lastFrame = purrentFrame;
-}
-
-
 void toggleKeys(meowindow& window) {
     if (meowse.keyPressed(window, GLFW_KEY_TAB)) {
         meowse.toggleCursorLock(window);
@@ -280,9 +273,9 @@ void meowmeraMove(meowindow& window, float deltaTime) {
 
 void loopsoup(meowindow& window, unsigned int shaderProgram, std::vector<MeowObject>& sceneObjects) {
     while (!window.shouldClose()) {
-        timething();
+        meowtime.update();
         toggleKeys(window);
-        meowmeraMove(window, deltaTime);
+        meowmeraMove(window, meowtime.deltaTime);
 
         glClearColor(0.15f, 0.25f, 0.4f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
