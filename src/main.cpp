@@ -155,7 +155,7 @@ void main() {
 // mouse stuff
 void meowseCB(GLFWwindow* window, double xpawsin, double ypawsin) {
     if (meowse.processInput((double)xpawsin, (double)ypawsin)) {
-        meowmera.chasingMice((float)xpawsin, (float)ypawsin);
+        meowmera.chasingMice(meowse.deltaXmeowse, meowse.deltaYmeowse);
     }
 }
 
@@ -257,24 +257,11 @@ void timething() {
 
 
 void toggleKeys(meowindow& window) {
-    static bool tabWasPressed = false;
-    if (window.isKeyPressed(GLFW_KEY_TAB)) {
-        if (!tabWasPressed) {
-            meowsorLocked = !meowsorLocked;
-            window.setCursorLocked(meowsorLocked);
-            if (meowsorLocked) firstmeowse = true;
-        }
-        tabWasPressed = true;
-    } else {
-        tabWasPressed = false;
+    if (meowse.keyPressed(window, GLFW_KEY_TAB)) {
+        meowse.toggleCursorLock(window);
     }
-
-    static bool fWasPressed = false;
-    if (window.isKeyPressed(GLFW_KEY_F)) {
-        if (!fWasPressed) crashLightOn = !crashLightOn;
-        fWasPressed = true;
-    } else {
-        fWasPressed = false;
+    if (meowse.keyPressed(window, GLFW_KEY_F)) {
+        crashLightOn = !crashLightOn;
     }
 }
 

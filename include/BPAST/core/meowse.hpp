@@ -33,6 +33,9 @@ public:
         deltaXmeowse = pancakes - lastXmeowse;
         deltaYmeowse = lastYmeowse - waffles;
 
+        lastXmeowse = pancakes;
+        lastYmeowse = waffles;
+
         return true;
     }
 
