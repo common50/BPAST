@@ -13,7 +13,7 @@ public:
     float deltaYmeowse;
 
     meowse() {
-        cursorLocked = false;
+        cursorLocked = true;
         firstmeowse = true;
         lastXmeowse = 0.0f;
         lastYmeowse = 0.0f;
