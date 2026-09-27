@@ -18,6 +18,7 @@
 #include <BPAST/scene/SceneObj.hpp>
 #include <BPAST/core/meowmera.hpp>
 #include <BPAST/core/meowindow.hpp>
+#include <BPAST/core/meowse.hpp>
 // bpast ******
 
 #ifdef _WIN32
@@ -114,13 +115,8 @@ void main() {
     // camera stuff ----------------------------------------
     meowmera meowmera;
 
-
-
     // mouse stuff -----------------------------------------
-    float lastXmeowse = 400.0f, lastYmeowse = 300.0f;
-    bool firstmeowse = true; // was told to add this
-
-    bool meowsorLocked = true;
+    meowse meowse;
 
     // keyboard stuff --------------------------------------
     bool crashLightOn = true;
@@ -158,26 +154,10 @@ void main() {
 
 // mouse stuff
 void meowseCB(GLFWwindow* window, double xpawsin, double ypawsin) {
-    if (!meowsorLocked) return;
-
-    float meowx = static_cast<float>(xpawsin);
-    float meowy = static_cast<float>(ypawsin);
-
-    if (firstmeowse) {
-        lastXmeowse = meowx;
-        lastYmeowse = meowy;
-        firstmeowse = false;
+    if (meowse.processInput((double)xpawsin, (double)ypawsin)) {
+        meowmera.chasingMice((float)xpawsin, (float)ypawsin);
     }
-
-    float meoffsetX = meowx - lastXmeowse;
-    float meoffsetY = lastYmeowse - meowy;
-
-    lastXmeowse = meowx;
-    lastYmeowse = meowy;
-
-    meowmera.chasingMice(meoffsetX, meoffsetY);
 }
-
 
 // create shader program and compile shaders and whatnot
 unsigned int createMeowProgram() {
