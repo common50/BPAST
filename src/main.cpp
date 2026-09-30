@@ -20,6 +20,7 @@
 #include <BPAST/core/meowindow.hpp>
 #include <BPAST/core/meowse.hpp>
 #include <BPAST/core/meowtime.hpp>
+#include <BPAST/graphics/meowder.hpp>
 // bpast ******
 
 #ifdef _WIN32

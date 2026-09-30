@@ -8,6 +8,8 @@
 #include <string>
 #include <unordered_map>
 
+// shader btw
+
 class meowder {
 public:
     unsigned int program;
