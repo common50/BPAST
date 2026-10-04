@@ -57,25 +57,6 @@ extern "C" {
     // frame timing stuff ---------------------------------
     meowtime meowtime;
 
-
-
-    // uniforms -------------------------------------------
-    struct MeowNiforms {
-        int meowdel;
-        int miew;
-        int meowjection;
-        int huhTexture; // why did i put this one here?
-        int lightPaws;
-        int lightCol;
-        int lightDir;
-        int viewPaws;
-        int meownCutOff;
-        int meowterCutOff;
-        int crashLightOn;
-    };
-
-    MeowNiforms u;
-
 // """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
@@ -88,49 +69,6 @@ void meowseCB(GLFWwindow* window, double xpawsin, double ypawsin) {
         meowmera.chasingMice(meowse.deltaXmeowse, meowse.deltaYmeowse);
     }
 }
-
-// create shader program and compile shaders and whatnot
-unsigned int createMeowProgram() {
-
-    unsigned int meowtexShader = glCreateShader(GL_VERTEX_SHADER); // meowwwww
-    glShaderSource(meowtexShader, 1, &vertexShaderSource, nullptr);
-    glCompileShader(meowtexShader);
-
-    int meowsess;
-    char meowinfo[512];
-    glGetShaderiv(meowtexShader, GL_COMPILE_STATUS, &meowsess);
-    if (!meowsess) {
-        glGetShaderInfoLog(meowtexShader, 512, nullptr, meowinfo);
-        std::cerr << "vertex shader blew up yo: " << meowinfo << std::endl;
-    }
-
-    unsigned int meowmentShader = glCreateShader(GL_FRAGMENT_SHADER); // meowwwww
-    glShaderSource(meowmentShader, 1, &fragmentShaderSource, nullptr);
-    glCompileShader(meowmentShader);
-
-    glGetShaderiv(meowmentShader, GL_COMPILE_STATUS, &meowsess);
-    if (!meowsess) {
-        glGetShaderInfoLog(meowmentShader, 512, nullptr, meowinfo);
-        std::cerr << "fragment shader blew up yo: " << meowinfo << std::endl;
-    }
-
-    unsigned int meowProgram = glCreateProgram(); // meowwwww
-    glAttachShader(meowProgram, meowtexShader);
-    glAttachShader(meowProgram, meowmentShader);
-    glLinkProgram(meowProgram);
-
-    glGetProgramiv(meowProgram, GL_LINK_STATUS, &meowsess);
-    if (!meowsess) {
-        glGetProgramInfoLog(meowProgram, 512, nullptr, meowinfo);
-        std::cerr << "program linking blew up yo: " << meowinfo << std::endl;
-    }
-
-    glDeleteShader(meowtexShader);
-    glDeleteShader(meowmentShader);
-
-    return meowProgram;
-}
-
 
 // texture loading and binding and yknow whatever other stuff related to textures
 // idk what to name stuff
@@ -201,7 +139,7 @@ void meowmeraMove(meowindow& window, float deltaTime) {
     );
 }
 
-void loopsoup(meowindow& window, unsigned int shaderProgram, std::vector<MeowObject>& sceneObjects) {
+void loopsoup(meowindow& window, meowder& shader, std::vector<MeowObject>& sceneObjects) {
     while (!window.shouldClose()) {
         meowtime.update();
         toggleKeys(window);
@@ -210,25 +148,25 @@ void loopsoup(meowindow& window, unsigned int shaderProgram, std::vector<MeowObj
         glClearColor(0.15f, 0.25f, 0.4f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glUseProgram(shaderProgram);
+        shader.use();
 
         glm::mat4 miew = meowmera.getViewMatrix();
         glm::mat4 meowjection = glm::perspective(glm::radians(45.0f), window.aspectRatio(), 0.1f, 100.0f);
 
-        glUniformMatrix4fv(u.miew, 1, GL_FALSE, glm::value_ptr(miew));
-        glUniformMatrix4fv(u.meowjection, 1, GL_FALSE, glm::value_ptr(meowjection));
+        shader.setMat4("miew", miew);
+        shader.setMat4("meowjection", meowjection);
 
-        glUniform3f(u.lightPaws, meowmera.paws.x, meowmera.paws.y, meowmera.paws.z);
-        glUniform3f(u.lightDir, meowmera.front.x, meowmera.front.y, meowmera.front.z);
-        glUniform3f(u.lightCol, 1.0f, 1.0f, 1.0f);
-        glUniform3f(u.viewPaws, meowmera.paws.x, meowmera.paws.y, meowmera.paws.z);
-        glUniform1f(u.meownCutOff, cos(glm::radians(12.5f)));
-        glUniform1f(u.meowterCutOff, cos(glm::radians(17.5f)));
-        glUniform1i(u.crashLightOn, crashLightOn);
+        shader.setVec3("lightPaws", meowmera.paws);
+        shader.setVec3("lightDir", meowmera.front);
+        shader.setVec3("lightCol", glm::vec3(1.0f, 1.0f, 1.0f));
+        shader.setVec3("viewPaws", meowmera.paws);
+        shader.setFloat("meownCutOff", cos(glm::radians(12.5f)));
+        shader.setFloat("meowterCutOff", cos(glm::radians(17.5f)));
+        shader.setInt("crashLightOn", crashLightOn);
 
         for (MeowObject& obj : sceneObjects) {
-            glUniformMatrix4fv(u.meowdel, 1, GL_FALSE, glm::value_ptr(obj.modelMatrix));
-            glUniform1i(u.huhTexture, obj.useTexture);
+            shader.setMat4("meowdel", obj.modelMatrix);
+            shader.setBool("huhTexture", obj.useTexture);
             if (obj.useTexture) {
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, obj.textureID);
@@ -248,11 +186,10 @@ void loopsoup(meowindow& window, unsigned int shaderProgram, std::vector<MeowObj
 
 
 // "free my boy ram he aint do nun"
-void cleanupcrew(std::vector<MeowObject>& sceneObjects, unsigned int shaderProgram) {
+void cleanupcrew(std::vector<MeowObject>& sceneObjects) {
     for (MeowObject& obj : sceneObjects) {
         glDeleteVertexArrays(1, &obj.VAO);
     }
-    glDeleteProgram(shaderProgram);
 }
 
 
@@ -266,24 +203,9 @@ int main() {
     window.setCursorLocked(true);
     window.setCursorPosCallback(meowseCB);
 
-    unsigned int shaderProgram = createMeowProgram();
-
-    glUseProgram(shaderProgram);
-    glUniform1i(glGetUniformLocation(shaderProgram, "meowtex"), 0);
-
-
-    u.meowdel      = glGetUniformLocation(shaderProgram, "meowdel");
-    u.miew         = glGetUniformLocation(shaderProgram, "miew");
-    u.meowjection  = glGetUniformLocation(shaderProgram, "meowjection");
-    u.huhTexture   = glGetUniformLocation(shaderProgram, "huhTexture");
-    u.lightPaws    = glGetUniformLocation(shaderProgram, "lightPaws");
-    u.lightCol     = glGetUniformLocation(shaderProgram, "lightCol");
-    u.viewPaws     = glGetUniformLocation(shaderProgram, "viewPaws");
-    u.lightDir      = glGetUniformLocation(shaderProgram, "lightDir");
-    u.meownCutOff   = glGetUniformLocation(shaderProgram, "meownCutOff");
-    u.meowterCutOff = glGetUniformLocation(shaderProgram, "meowterCutOff");
-    u.crashLightOn = glGetUniformLocation(shaderProgram, "crashLightOn");
-
+    meowder meowder("assets/shaders/basic.vert", "assets/shaders/basic.frag");
+    meowder.use();
+    meowder.setInt("meowtex", 0);
 
     unsigned int meowndTexture = textureThing("assets/textures/garden.jpg");
 
@@ -297,9 +219,9 @@ int main() {
     // versioj check cus ppl tend to mess version stuff up and i alwaus need to fix it for them
     std::cout << "current version " << glGetString(GL_VERSION) << std::endl;
 
-    loopsoup(window, shaderProgram, sceneObjects);
+    loopsoup(window, meowder, sceneObjects);
 
-    cleanupcrew(sceneObjects, shaderProgram);
+    cleanupcrew(sceneObjects);
 
     return 0;
 }
