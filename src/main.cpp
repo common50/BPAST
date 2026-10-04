@@ -203,7 +203,7 @@ int main() {
     window.setCursorLocked(true);
     window.setCursorPosCallback(meowseCB);
 
-    meowder meowder("assets/shaders/basic.vert", "assets/shaders/basic.frag");
+    meowder meowder("assets/shaders/mttns.vert", "assets/shaders/mttns.frag");
     meowder.use();
     meowder.setInt("meowtex", 0);
 
