@@ -10,6 +10,8 @@
 
 struct MeowObject {
     unsigned int VAO;
+    unsigned int VBO;
+    unsigned int EBO;
     unsigned int indexCount;
     unsigned int textureID;
     bool useTexture;
@@ -25,6 +27,8 @@ MeowObject loadSceneObject(const char* path, bool utex, unsigned int texid) {
 
     MeowObject obj;
     obj.VAO = meow;
+    obj.VBO = mrow;
+    obj.EBO = pancake;
     obj.indexCount = (unsigned int)fries.indices.size();
     obj.textureID = texid;
     obj.useTexture = utex;

@@ -189,6 +189,8 @@ void loopsoup(meowindow& window, meowder& shader, std::vector<MeowObject>& scene
 void cleanupcrew(std::vector<MeowObject>& sceneObjects) {
     for (MeowObject& obj : sceneObjects) {
         glDeleteVertexArrays(1, &obj.VAO);
+        glDeleteBuffers(1, &obj.VBO);
+        glDeleteBuffers(1, &obj.EBO);
     }
 }
 
