@@ -21,6 +21,7 @@
 #include <BPAST/core/meowse.hpp>
 #include <BPAST/core/meowtime.hpp>
 #include <BPAST/graphics/meowder.hpp>
+#include <BPAST/graphics/meowxture.hpp>
 // bpast ******
 
 #ifdef _WIN32
@@ -209,11 +210,11 @@ int main() {
     meowder.use();
     meowder.setInt("meowtex", 0);
 
-    unsigned int meowndTexture = textureThing("assets/textures/garden.jpg");
+    meowxture meowndTexture("assets/textures/garden.jpg");
 
     std::vector<MeowObject> sceneObjects;
     sceneObjects.push_back(loadSceneObject("assets/models/rainbowcube.obj", false, 0));
-    sceneObjects.push_back(loadSceneObject("assets/models/meownd.obj", true, meowndTexture));
+    sceneObjects.push_back(loadSceneObject("assets/models/meownd.obj", true, meowndTexture.id));
     sceneObjects.push_back(loadSceneObject("assets/models/mittest.obj", false, 0));
 
     sceneObjects[2].modelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 0.0f, 0.0f));
