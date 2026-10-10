@@ -38,11 +38,7 @@ extern "C" {
 
 // TO DO: remove all this stuff and make vars not global because its bad
 
-// i always keep it neat with the global vars cus i like to know where they are and what they do
-// else ill mess up, seriously, i dont know what my problem is when i have messy globals
-
-// functions n stuff can be all over the place idc i can handle that
-// but dont mess with my global vars
+// fyi there used to be like 30 globals in here when this was still a demo
 
     // camera stuff ----------------------------------------
     meowmera meowmera;
