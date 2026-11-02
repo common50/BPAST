@@ -3,10 +3,6 @@
 
 // 2 lines for functions else ill go insane
 
-
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -15,13 +11,13 @@
 #include <iostream>
 
 // bpast ******
-#include <BPAST/scene/SceneObj.hpp>
 #include <BPAST/core/meowmera.hpp>
 #include <BPAST/core/meowindow.hpp>
 #include <BPAST/core/meowse.hpp>
 #include <BPAST/core/meowtime.hpp>
 #include <BPAST/graphics/meowder.hpp>
 #include <BPAST/graphics/meowxture.hpp>
+#include <BPAST/scene/meowscene.hpp>
 // bpast ******
 
 #ifdef _WIN32
@@ -67,52 +63,6 @@ void meowseCB(GLFWwindow* window, double xpawsin, double ypawsin) {
     }
 }
 
-// texture loading and binding and yknow whatever other stuff related to textures
-// idk what to name stuff
-unsigned int textureThing(const char* path) {
-    unsigned int meowxture; // meowwwww
-    glGenTextures(1, &meowxture);
-    glBindTexture(GL_TEXTURE_2D, meowxture);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    stbi_set_flip_vertically_on_load(true);
-
-    int width, height, nrChannels; // i couldnt come up with anything :( same with path btw
-    unsigned char* meowta = stbi_load(path, &width, &height, &nrChannels, 0);
-
-    if (meowta) {
-        std::cout << "loaded " << path << ": " << width << "x" << height << " channels=" << nrChannels << std::endl; // temporary debug print cus im stupid
-
-        GLenum format;
-        if (nrChannels == 1) {
-            format = GL_RED;
-        } else if (nrChannels == 3) {
-            format = GL_RGB;
-        } else if (nrChannels == 4) {
-            format = GL_RGBA;
-        } else {
-            std::cerr << "woah wtf this is the amount of channels: " << nrChannels << " for " << path << std::endl;
-            format = GL_RGB;
-        }
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, meowta);
-        // couldnt have done that witout param 6
-        glGenerateMipmap(GL_TEXTURE_2D); // its so easy
-         stbi_image_free(meowta); // else my mem is gonna get caught leaking
-    } else {
-        std::cerr << "texture loading isnt loading" << path << std::endl; // only thing yall are getting is the path 4 now
-        unsigned char magenta[3] = {255, 0, 255}; // is this even magenta?
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, magenta);
-    }
-
-    return meowxture;
-}
-
 
 void toggleKeys(meowindow& window) {
     if (meowse.keyPressed(window, GLFW_KEY_TAB)) {
@@ -122,6 +72,7 @@ void toggleKeys(meowindow& window) {
         crashLightOn = !crashLightOn;
     }
 }
+
 
 void meowmeraMove(meowindow& window, float deltaTime) {
     meowmera.meowmeraMove(
@@ -136,7 +87,7 @@ void meowmeraMove(meowindow& window, float deltaTime) {
     );
 }
 
-void loopsoup(meowindow& window, meowder& shader, std::vector<MeowObject>& sceneObjects) {
+void loopsoup(meowindow& window, meowder& shader, meowscene& meowscene) {
     while (!window.shouldClose()) {
         meowtime.update();
         toggleKeys(window);
@@ -161,16 +112,7 @@ void loopsoup(meowindow& window, meowder& shader, std::vector<MeowObject>& scene
         shader.setFloat("meowterCutOff", cos(glm::radians(17.5f)));
         shader.setInt("crashLightOn", crashLightOn);
 
-        for (MeowObject& obj : sceneObjects) {
-            shader.setMat4("meowdel", obj.modelMatrix);
-            shader.setBool("huhTexture", obj.useTexture);
-            if (obj.useTexture) {
-                glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_2D, obj.textureID);
-            }
-            glBindVertexArray(obj.VAO);
-            glDrawElements(GL_TRIANGLES, obj.indexCount, GL_UNSIGNED_INT, 0);
-        }
+        meowscene.draw(shader);
 
         window.swapBuffers();
         window.pollEvents();
@@ -178,16 +120,6 @@ void loopsoup(meowindow& window, meowder& shader, std::vector<MeowObject>& scene
         if (window.isKeyPressed(GLFW_KEY_ESCAPE)) {
             window.requestClose();
         }
-    }
-}
-
-
-// "free my boy ram he aint do nun"
-void cleanupcrew(std::vector<MeowObject>& sceneObjects) {
-    for (MeowObject& obj : sceneObjects) {
-        glDeleteVertexArrays(1, &obj.VAO);
-        glDeleteBuffers(1, &obj.VBO);
-        glDeleteBuffers(1, &obj.EBO);
     }
 }
 
@@ -208,19 +140,16 @@ int main() {
 
     meowxture meowndTexture("assets/textures/garden.jpg");
 
-    std::vector<MeowObject> sceneObjects;
-    sceneObjects.push_back(loadSceneObject("assets/models/rainbowcube.obj", false, 0));
-    sceneObjects.push_back(loadSceneObject("assets/models/meownd.obj", true, meowndTexture.id));
-    sceneObjects.push_back(loadSceneObject("assets/models/mittest.obj", false, 0));
-
-    sceneObjects[2].modelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 0.0f, 0.0f));
+    meowscene meowscene;
+    meowscene.add("assets/models/rainbowcube.obj");
+    meowscene.add("assets/models/meownd.obj", true, meowndTexture.id);
+    int mitts = meowscene.add("assets/models/mittest.obj");
+    meowscene.get(mitts).modelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 0.0f, 0.0f));
 
     // versioj check cus ppl tend to mess version stuff up and i alwaus need to fix it for them
     std::cout << "current version " << glGetString(GL_VERSION) << std::endl;
 
-    loopsoup(window, meowder, sceneObjects);
-
-    cleanupcrew(sceneObjects);
+    loopsoup(window, meowder, meowscene);
 
     return 0;
 }
