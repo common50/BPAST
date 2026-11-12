@@ -97,5 +97,9 @@ public:
         return static_cast<float>(meowidth) / static_cast<float>(meowght);
     }
 
+    void getCursorpos(double& stroop, double& wafel) {
+        glfwGetCursorPos(paw, &stroop, &wafel);
+    }
+
 
 };
