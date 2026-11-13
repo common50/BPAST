@@ -3,6 +3,7 @@
 
 // 2 lines for functions else ill go insane
 
+#include <glad/glad.h>
 #include <iostream>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
