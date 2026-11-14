@@ -43,7 +43,7 @@ void meowgine::update() {
     );
 
     double meowsorX, meowsorY;
-    window.getCursorpos(meowsorX, meowsorY);
+    window.getCursorPos(meowsorX, meowsorY);
     if (input.processInput((float)meowsorX, (float)meowsorY)) {
         camera.chasingMice(input.deltaXmeowse, input.deltaYmeowse);
     }

@@ -12,6 +12,8 @@ public:
     meowindow(int width, int height, const char* title);
 
     ~meowindow();
+    meowindow(const meowindow&) = delete;
+    meowindow& operator=(const meowindow&) = delete;
 
     bool isValid() const {
         return paw != nullptr;
@@ -50,7 +52,7 @@ public:
         return static_cast<float>(meowidth) / static_cast<float>(meowght);
     }
 
-    void getCursorpos(double& stroop, double& wafel) {
+    void getCursorPos(double& stroop, double& wafel) {
         glfwGetCursorPos(paw, &stroop, &wafel);
     }
 
