@@ -2,6 +2,7 @@
 #include <glad/glad.h>
 #include <BPAST/graphics/meowder.hpp>
 
+namespace bpast {
 meowscene::meowscene() {}
 
 meowscene::~meowscene() {
@@ -29,4 +30,5 @@ void meowscene::draw(meowder& shady) {
         glBindVertexArray(meowbject.VAO);
         glDrawElements(GL_TRIANGLES, meowbject.indexCount, GL_UNSIGNED_INT, 0);
     }
+}
 }

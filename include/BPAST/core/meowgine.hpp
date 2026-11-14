@@ -15,6 +15,7 @@
 // BPAST ******
 
 
+namespace bpast {
 class meowgine {
 public:
     // DONT MESS WITH THE ORDER
@@ -48,3 +49,4 @@ public:
 
     void loopsoup();
 };
+}

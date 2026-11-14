@@ -2,6 +2,7 @@
 #include <BPAST/graphics/obj-pawrser.hpp>
 #include <BPAST/graphics/meowsh.hpp>
 
+namespace bpast {
 MeowObject loadSceneObject(const char* path, bool utex, unsigned int texid) {
     Meowdel fries = loadObj(path);
 
@@ -18,4 +19,5 @@ MeowObject loadSceneObject(const char* path, bool utex, unsigned int texid) {
     obj.modelMatrix = glm::mat4(1.0f);
 
     return obj;
+}
 }

@@ -1,9 +1,9 @@
 #pragma once
 #include <vector>
 #include <BPAST/scene/SceneObj.hpp>
+#include <BPAST/graphics/meowder.hpp>
 
-class meowder;
-
+namespace bpast{
 // idrc anymore
 
 class meowscene {
@@ -26,3 +26,4 @@ public:
 
     void draw(meowder& shady);
 };
+}

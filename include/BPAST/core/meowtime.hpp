@@ -1,5 +1,6 @@
 #pragma once
 
+namespace bpast {
 class meowtime {
 public:
     float deltaTime;
@@ -9,3 +10,4 @@ public:
 
     void update();
 };
+}

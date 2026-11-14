@@ -1,6 +1,7 @@
 #include <BPAST/graphics/meowsh.hpp>
 #include <glad/glad.h>
 
+namespace bpast {
 void GPUseless(Meowdel& model, unsigned int& meow, unsigned int& mrow, unsigned int& pancake) {
     // VAO n VBO n EBO part if you didnt notice
 
@@ -26,4 +27,5 @@ void GPUseless(Meowdel& model, unsigned int& meow, unsigned int& mrow, unsigned 
 
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(9 * sizeof(float)));
     glEnableVertexAttribArray(2);
+}
 }

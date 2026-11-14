@@ -1,8 +1,8 @@
 #pragma once
 #include <unordered_map>
+#include <BPAST/core/meowindow.hpp>
 
-class meowindow;
-
+namespace bpast {
 class meowse {
 public:
     bool cursorLocked;
@@ -25,3 +25,4 @@ private:
     std::unordered_map<int, bool> whiskers;
 
 };
+}

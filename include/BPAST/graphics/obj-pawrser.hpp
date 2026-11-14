@@ -6,6 +6,7 @@
 #pragma once
 #include <vector>
 
+namespace bpast {
 struct Meowdel {
     std::vector<float> vertexData;
     std::vector<unsigned int> indices;
@@ -13,7 +14,4 @@ struct Meowdel {
 
 
 Meowdel loadObj(const char* path);
-
-// -common50
-
-// okay i think i fixed the "f 1 2 3" thing lmk if i fucked it up
+}

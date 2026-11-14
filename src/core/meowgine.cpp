@@ -2,6 +2,7 @@
 #include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
 
+namespace bpast {
 meowgine::meowgine(int meowidth, int meowght, const char* meowtle,
         const char* verityPath, const char* fragPath)
     : window(meowidth, meowght, meowtle) {
@@ -75,4 +76,5 @@ void meowgine::loopsoup() {
         update();
         draw();
     }
+}
 }

@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <string>
 
+namespace bpast {
 static int negIdxFix(int meow, size_t listSize) {
     if (meow < 0) {
         meow = static_cast<int>(listSize) + meow + 1;
@@ -236,4 +237,8 @@ Meowdel loadObj(const char* path) {
 
     std::cout << "parsed " << positions.size() << " positions, " << normals.size() << " normals" << std::endl;
     return model;
+}
+// -common50
+
+// okay i think i fixed the "f 1 2 3" thing lmk if i fucked it up
 }

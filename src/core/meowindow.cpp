@@ -1,6 +1,8 @@
 #include <BPAST/core/meowindow.hpp>
 #include <iostream>
+#include <wchar.h>
 
+namespace bpast{
 meowindow::meowindow(int width, int height, const char* title) {
     meowidth = width;
     meowght = height;
@@ -49,4 +51,5 @@ meowindow::~meowindow() {
         glfwDestroyWindow(paw);
     }
     glfwTerminate();
+}
 }

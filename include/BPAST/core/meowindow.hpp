@@ -2,7 +2,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-
+namespace bpast {
 // lowkey 80% of this is just from the documentation idk whats going on here
 class meowindow {
 public:
@@ -58,3 +58,4 @@ public:
 
 
 };
+}

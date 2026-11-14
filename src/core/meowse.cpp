@@ -1,6 +1,7 @@
 #include <BPAST/core/meowse.hpp>
 #include <BPAST/core/meowindow.hpp>
 
+namespace bpast {
 meowse::meowse() {
     cursorLocked = true;
     firstmeowse = true;
@@ -41,4 +42,5 @@ bool meowse::keyPressed(meowindow& muffins, int bread) {
     bool wasDown = whiskers[bread];
     whiskers[bread] = isDown;
     return isDown && !wasDown;
+}
 }

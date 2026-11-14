@@ -2,6 +2,7 @@
 #include <cmath>
 #include <glm/gtc/matrix_transform.hpp>
 
+namespace bpast {
 meowmera::meowmera() {
     paws = glm::vec3(0.0f, 0.0f, 0.0f);
     front = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -51,4 +52,5 @@ void meowmera::meowmeraMove(float Wprsd, float Sprsd, float Aprsd, float Dprsd,
     if (Dprsd) paws += glm::normalize(glm::cross(flatFront, up)) * fritters;
     if (Spaceprsd) paws += fritters * up;
     if (Ctrlprsd) paws -= fritters * up;
+}
 }

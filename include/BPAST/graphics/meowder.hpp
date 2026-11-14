@@ -5,6 +5,7 @@
 
 // shader btw
 
+namespace bpast {
 class meowder {
 public:
     unsigned int program;
@@ -34,3 +35,4 @@ private:
 
     int loc(const std::string& muffins);
 };
+}

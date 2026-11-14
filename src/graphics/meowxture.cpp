@@ -5,6 +5,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+namespace bpast {
 meowxture::meowxture(const char* icecream) {
     glGenTextures(1, &id);
     glBindTexture(GL_TEXTURE_2D, id);
@@ -51,4 +52,5 @@ meowxture::~meowxture() {
 void meowxture::bind(unsigned int pancakes) {
     glActiveTexture(GL_TEXTURE0 + pancakes);
     glBindTexture(GL_TEXTURE_2D, id);
+}
 }

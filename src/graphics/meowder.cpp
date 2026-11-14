@@ -7,6 +7,7 @@
 #include <string>
 #include <unordered_map>
 
+namespace bpast {
 static std::string readFile(const char* woof) {
     std::ifstream meow(woof);
     if (!meow.is_open()) {
@@ -96,4 +97,5 @@ int meowder::loc(const std::string& muffins) {
     }
     locationCache[muffins] = chickens;
     return chickens;
+}
 }

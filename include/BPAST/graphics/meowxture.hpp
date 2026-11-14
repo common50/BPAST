@@ -1,5 +1,6 @@
 #pragma once
 
+namespace bpast {
 class meowxture {
 public:
     unsigned int id;
@@ -13,3 +14,4 @@ public:
 
     void bind(unsigned int pancakes = 0);
 };
+}

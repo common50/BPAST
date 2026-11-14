@@ -1,6 +1,7 @@
 #pragma once
 #include <glm/glm.hpp>
 
+namespace bpast {
 class meowmera {
 public:
     glm::vec3 paws;
@@ -23,3 +24,4 @@ public:
     void meowmeraMove(float Wprsd, float Sprsd, float Aprsd, float Dprsd,
         float Spaceprsd, float Ctrlprsd, float Shiftprsd, float deltaTime);
 };
+}
