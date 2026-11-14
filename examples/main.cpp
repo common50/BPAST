@@ -27,12 +27,12 @@ int main() {
     //versioj check cus ppl always tend to mess this up and i need to fix it for them and i dont want to do that
     std::cout << "current version " << glGetString(GL_VERSION) << std::endl;
 
-    meowxture groundTexCUS("assets/textures/garden.jpg");
+    meowxture meowtex("assets/textures/garden.jpg");
 
     meowgine.camera.paws = glm::vec3(0.0f, 0.0f, 3.0f);
 
     meowgine.scene.add("assets/models/rainbowcube.obj");
-    meowgine.scene.add("assets/models/meownd.obj", true, groundTexCUS.id);
+    meowgine.scene.add("assets/models/meownd.obj", true, meowtex.id);
     int mittsCUS = meowgine.scene.add("assets/models/mittest.obj");
     meowgine.scene.get(mittsCUS).modelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 0.0f, 0.0f));
 

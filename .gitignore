@@ -1,7 +1,8 @@
 /BPAST/
 /build/
-BPAST.exe
-libBPAST.a
+/.cache/
+*.exe
 *.o
+*.a
 mwform
 compile_commands.json
