@@ -3,15 +3,20 @@
 #include <wchar.h>
 
 namespace bpast{
+namespace {
+int glfwLiveWindows = 0;
+}
+
 meowindow::meowindow(int width, int height, const char* title) {
     meowidth = width;
     meowght = height;
     paw = nullptr;
 
-    if(!glfwInit()) {
+    if(glfwLiveWindows == 0 && !glfwInit()) {
         std::cerr << "yo glfwinit failed haha good luck" << std::endl;
         return;
     }
+    ++glfwLiveWindows;
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -20,7 +25,7 @@ meowindow::meowindow(int width, int height, const char* title) {
     paw = glfwCreateWindow(meowidth, meowght, title, nullptr, nullptr);
     if(!paw) {
         std::cerr << "hmmmm glfw window is not creating" << std::endl;
-        glfwTerminate();
+        if(--glfwLiveWindows == 0) glfwTerminate();
         return;
     }
 
@@ -38,8 +43,8 @@ meowindow::meowindow(int width, int height, const char* title) {
     if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cerr << "gladLoadGLLoader failed, do better next time i dont hav all day" << std::endl;
         glfwDestroyWindow(paw);
-        glfwTerminate();
         paw = nullptr;
+        if(--glfwLiveWindows == 0) glfwTerminate();
         return;
     }
 
@@ -49,7 +54,8 @@ meowindow::meowindow(int width, int height, const char* title) {
 meowindow::~meowindow() {
     if(paw) {
         glfwDestroyWindow(paw);
+        paw = nullptr;
+        if(--glfwLiveWindows == 0) glfwTerminate();
     }
-    glfwTerminate();
 }
 }
