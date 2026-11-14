@@ -7,10 +7,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-// ... since i'll only be explaining this one
+// ... since i'll only be explaining this one:
 #include <BPAST/bpast.hpp>
 
-// ------------------- do this cus else it will mess up with the hardware -------------------
+// -------------------- do this to force discrete instead of intergrated --------------------
 #ifdef _WIN32
 extern "C" {
     __declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
