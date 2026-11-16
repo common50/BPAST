@@ -21,10 +21,10 @@ extern "C" {
 
 int main() {
 
-    // k so first do meowengine (imma rename it to just "engine" dw) and put
+    // k so first do Engine and put
     // window width, window height, window title,
     // and then the .vert and .frag shader paths or wtv they're called i dont remember
-    bpast::meowgine engine(800, 600, "BPAST", "assets/shaders/mttns.vert", "assets/shaders/mttns.frag");
+    bpast::Engine engine(800, 600, "BPAST", "assets/shaders/mttns.vert", "assets/shaders/mttns.frag");
     //and then check for error
     if (!engine.isValid()) return -1;
 
@@ -32,9 +32,10 @@ int main() {
     std::cout << "current version " << glGetString(GL_VERSION) << std::endl;
 
     // this loads garden.jpg into a gpu texture, cooltexture.id would now be the raw GL texture handle
-    bpast::meowxture cooltexture("assets/textures/garden.jpg");
+    bpast::Texture cooltexture("assets/textures/garden.jpg");
 
     // set the camera world-space position
+    // (i'll fix the "paws" thing later)
     engine.camera.paws = glm::vec3(0.0f, 0.0f, 3.0f);
 
     // this takes an .obj, shoves it thru my parser, and uploads it to the GPU (VAO, VBO, EBO)
