@@ -1,23 +1,17 @@
 #include <BPAST/scene/SceneObj.hpp>
-#include <BPAST/graphics/obj-pawrser.hpp>
-#include <BPAST/graphics/meowsh.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace bpast {
-MeowObject loadSceneObject(const char* path, bool utex, unsigned int texid) {
-    Meowdel fries = loadObj(path);
 
-    unsigned int meow, mrow, pancake;
-    GPUseless(fries, meow, mrow, pancake);
-
-    MeowObject obj;
-    obj.VAO = meow;
-    obj.VBO = mrow;
-    obj.EBO = pancake;
-    obj.indexCount = (unsigned int)fries.indices.size();
-    obj.textureID = texid;
-    obj.useTexture = utex;
-    obj.modelMatrix = glm::mat4(1.0f);
-
-    return obj;
+// every moment is another oppertunity to put glm to work
+// and then put it in a class and call it your own
+glm::mat4 Transform::matrix() const {
+    glm::mat4 m = glm::translate(glm::mat4(1.0f), position);
+    m = glm::rotate(m, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+    m = glm::rotate(m, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+    m = glm::rotate(m, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+    return glm::scale(m, scale);
+    // just joking i properly did the license stuff for glm and gave credit
 }
+
 }

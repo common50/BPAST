@@ -47,8 +47,8 @@ int main() {
     engine.scene.add("assets/models/meownd.obj", true, cooltexture.id);
 
     // another .obj, but this one we push to the side using glm
-    int mitts = engine.scene.add("assets/models/mittest.obj");
-    engine.scene.get(mitts).modelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 0.0f, 0.0f));
+    int trythisangle = engine.scene.add("assets/models/mittest.obj");
+    engine.scene.get(trythisangle).transform.position = glm::vec3(2.0f, 0.0f, 0.0f);
 
     // IMPORTANT: don't hold a get() reference across more add() calls
     // the underlying std::vector can reallocate and invalidate it

@@ -1,22 +1,29 @@
-// idk what to name this file
-
 #pragma once
+#include <memory>
 #include <glm/glm.hpp>
+#include <BPAST/graphics/meowsh.hpp>
 
-  //__________________________________________________________________________________________\\.
- //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\.
-//""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\\.
+// lowkey needed to remove that ugly ass comment thingy
+
 namespace bpast {
-struct MeowObject {
-    unsigned int VAO;
-    unsigned int VBO;
-    unsigned int EBO;
-    unsigned int indexCount;
-    unsigned int textureID;
-    bool useTexture;
-    glm::mat4 modelMatrix;
+
+struct Transform {
+    glm::vec3 position{0.0f};
+    glm::vec3 rotation{0.0f};
+    glm::vec3 scale{1.0f};
+
+    glm::mat4 matrix() const;
 };
 
+struct Material {
+    glm::vec3 color{1.0f};
+    unsigned int texture = 0;
+};
 
-MeowObject loadSceneObject(const char* path, bool utex, unsigned int texid);
+struct MeowObject {
+    std::shared_ptr<meowsh> mesh;
+    Transform transform;
+    Material  material;
+};
+
 }

@@ -7,12 +7,13 @@ out vec4 FragColor;
 
 uniform sampler2D meowtex;
 uniform bool huhTexture;
+uniform vec3 materialColor;
 uniform vec3 viewPaws;
 
 #define MAX_LIGHTS 8
 
-// i need to make this more "proffesional" since the consumer should mess with this
-// so no more "lightpaws", instead ACTUAL var names
+// i legit dont know how .frag or .vert work
+// but who cares, as long as it works...
 
 struct Light {
     int   type;
@@ -28,7 +29,7 @@ uniform int   lightCount;
 uniform vec3  sceneAmbient;
 
 void main() {
-    vec3 baseColor = huhTexture ? texture(meowtex, meowtexCoord).rgb : meowtexColor;
+    vec3 baseColor = (huhTexture ? texture(meowtex, meowtexCoord).rgb : meowtexColor) * materialColor;
 
     vec3 norm    = normalize(meowMal);
     vec3 viewDir = normalize(viewPaws - fragPaws);

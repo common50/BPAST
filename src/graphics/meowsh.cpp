@@ -1,7 +1,12 @@
 #include <BPAST/graphics/meowsh.hpp>
 #include <glad/glad.h>
+#include <BPAST/graphics/obj-pawrser.hpp>
 
 namespace bpast {
+
+namespace {
+// mess with gpu buffers and vertex arrays
+// legit just standard opengl stuff
 void GPUseless(Meowdel& model, unsigned int& meow, unsigned int& mrow, unsigned int& pancake) {
     // VAO n VBO n EBO part if you didnt notice
 
@@ -28,4 +33,23 @@ void GPUseless(Meowdel& model, unsigned int& meow, unsigned int& mrow, unsigned 
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 11 * sizeof(float), (void*)(9 * sizeof(float)));
     glEnableVertexAttribArray(2);
 }
+}
+
+meowsh::meowsh(const char* path) {
+    Meowdel model = loadObj(path);
+    GPUseless(model, meow, mrow, pancake);
+    indexCount = (unsigned int)model.indices.size();
+}
+
+meowsh::~meowsh() {
+    glDeleteVertexArrays(1, &meow);
+    glDeleteBuffers(1, &mrow);
+    glDeleteBuffers(1, &pancake);
+}
+
+void meowsh::draw() const {
+    glBindVertexArray(meow);
+    glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+}
+
 }

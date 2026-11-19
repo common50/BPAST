@@ -1,30 +1,35 @@
 #include <BPAST/scene/meowscene.hpp>
 #include <glad/glad.h>
-#include <BPAST/graphics/meowder.hpp>
 #include <iostream>
 #include <string>
 
 namespace bpast {
-meowscene::meowscene() {}
-
-meowscene::~meowscene() {
-    for (MeowObject& meowbject : objects) {
-        glDeleteVertexArrays(1, &meowbject.VAO);
-        glDeleteBuffers(1, &meowbject.VBO);
-        glDeleteBuffers(1, &meowbject.EBO);
-    }
-}
 
 // i don wanna guess pos
 int meowscene::add(const char* soup, bool taxi, unsigned int biscuits) {
-    objects.push_back(loadSceneObject(soup, taxi, biscuits));
-    return (int)objects.size() - 1;
+    std::shared_ptr<meowsh> mesh = meshCache[soup].lock();
+    if (!mesh) {
+        mesh = std::make_shared<meowsh>(soup);
+        meshCache[soup] = mesh;
+    }
+
+    MeowObject obj;
+    obj.mesh = mesh;
+    if (taxi) obj.material.texture = biscuits;
+
+    int id = nextId++;
+    objects[id] = obj;
+    return id;
+}
+
+void meowscene::remove(int id) {
+    objects.erase(id);
 }
 
 namespace {
 int pushLight(std::vector<Light>& lights, const Light& l) {
     if ((int)lights.size() >= kMaxLights) {
-        std::cerr << "too many lights, max is " << kMaxLights << std::endl;
+        std::cerr << "noooo too many lights, max is only like " << kMaxLights << std::endl;
         return -1;
     }
     lights.push_back(l);
@@ -67,15 +72,19 @@ void meowscene::draw(meowder& shady) {
     }
 
     // objects
-    for (MeowObject& meowbject : objects) {
-        shady.setMat4("meowdel", meowbject.modelMatrix);
-        shady.setBool("huhTexture", meowbject.useTexture);
-        if (meowbject.useTexture) {
+    for (auto& entry : objects) {
+        MeowObject& meowbject = entry.second;
+        bool textured = meowbject.material.texture != 0;
+
+        shady.setMat4("meowdel", meowbject.transform.matrix());
+        shady.setVec3("materialColor", meowbject.material.color);
+        shady.setBool("huhTexture", textured);
+        if (textured) {
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, meowbject.textureID);
+            glBindTexture(GL_TEXTURE_2D, meowbject.material.texture);
         }
-        glBindVertexArray(meowbject.VAO);
-        glDrawElements(GL_TRIANGLES, meowbject.indexCount, GL_UNSIGNED_INT, 0);
+        meowbject.mesh->draw();
     }
 }
+
 }

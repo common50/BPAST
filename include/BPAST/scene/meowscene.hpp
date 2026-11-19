@@ -1,38 +1,42 @@
 #pragma once
+#include <map>
+#include <memory>
+#include <string>
+#include <unordered_map>
 #include <vector>
-#include <BPAST/scene/SceneObj.hpp>
-#include <BPAST/graphics/meowder.hpp>
 #include <glm/glm.hpp>
+#include <BPAST/scene/SceneObj.hpp>
 #include <BPAST/scene/lightstuff.hpp>
+#include <BPAST/graphics/meowder.hpp>
 
-namespace bpast{
+namespace bpast {
+
 // idrc anymore
 
 class meowscene {
 public:
-    std::vector<MeowObject> objects;
-
+    std::map<int, MeowObject> objects;
     std::vector<Light> lights;
     glm::vec3 ambient{0.05f};
 
-    int addLight(const DirectionalLight& l);
-    int addLight(const PointLight& l);
-    Light& light(int id) { return lights[id]; }
-
-    meowscene();
-
-    ~meowscene();
-
+    meowscene() = default;
     meowscene(const meowscene&) = delete;
     meowscene& operator=(const meowscene&) = delete;
 
     // i don wanna guess pos
     int add(const char* soup, bool taxi = false, unsigned int biscuits = 0);
+    void remove(int id);
+    MeowObject& get(int meow) { return objects.at(meow); }
 
-    MeowObject& get(int meow) {
-        return objects[meow];
-    }
+    int addLight(const DirectionalLight& l);   // each returns its index, or -1 if full
+    int addLight(const PointLight& l);
+    Light& light(int id) { return lights[id]; }
 
     void draw(meowder& shady);
+
+private:
+    std::unordered_map<std::string, std::weak_ptr<meowsh>> meshCache;
+    int nextId = 0;
 };
+
 }

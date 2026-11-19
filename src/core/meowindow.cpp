@@ -38,7 +38,7 @@ meowindow::meowindow(int width, int height, const char* title) {
         glViewport(0, 0, newMeowidth, newMeowght);
         toast->meowidth = newMeowidth;
         toast->meowght = newMeowght;
-    });
+    }); // shoutout to lam bda for making this possible in the first place
 
     if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cerr << "gladLoadGLLoader failed, do better next time i dont hav all day" << std::endl;
