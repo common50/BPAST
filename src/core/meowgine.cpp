@@ -29,7 +29,6 @@ void meowgine::update() {
         timing.update();
 
     if (input.keyPressed(window, GLFW_KEY_TAB)) input.toggleCursorLock(window);
-    if (input.keyPressed(window, GLFW_KEY_F)) crashLightOn = !crashLightOn;
     if (window.isKeyPressed(GLFW_KEY_ESCAPE)) window.requestClose();
 
      camera.meowmeraMove(
@@ -58,13 +57,7 @@ void meowgine::draw() {
     shader->setMat4("miew", camera.getViewMatrix());
     shader->setMat4("meowjection", glm::perspective(glm::radians(fovDeg), window.aspectRatio(), nearPlane, farPlane));
 
-    shader->setVec3("lightPaws", camera.paws);
-    shader->setVec3("lightDir", camera.front);
-    shader->setVec3("lightCol", lightColor);
     shader->setVec3("viewPaws", camera.paws);
-    shader->setFloat("meownCutOff", glm::cos(glm::radians(innerCutDeg)));
-    shader->setFloat("meowterCutOff", glm::cos(glm::radians(outerCutDeg)));
-    shader->setBool("crashLightOn", crashLightOn);
 
     scene.draw(*shader);
 

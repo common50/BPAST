@@ -2,6 +2,8 @@
 #include <vector>
 #include <BPAST/scene/SceneObj.hpp>
 #include <BPAST/graphics/meowder.hpp>
+#include <glm/glm.hpp>
+#include <BPAST/scene/lightstuff.hpp>
 
 namespace bpast{
 // idrc anymore
@@ -9,6 +11,13 @@ namespace bpast{
 class meowscene {
 public:
     std::vector<MeowObject> objects;
+
+    std::vector<Light> lights;
+    glm::vec3 ambient{0.05f};
+
+    int addLight(const DirectionalLight& l);
+    int addLight(const PointLight& l);
+    Light& light(int id) { return lights[id]; }
 
     meowscene();
 

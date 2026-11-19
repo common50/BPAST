@@ -54,6 +54,23 @@ int main() {
     // the underlying std::vector can reallocate and invalidate it
     // so don't do that (unless you want that, which i doubt)
 
+    // to see, you'll need to add light
+    // directional light:
+    bpast::DirectionalLight sun;
+    sun.direction = glm::vec3(-0.3f, -1.0f, -0.2f);
+    sun.color     = glm::vec3(1.0f, 0.95f, 0.9f);
+    sun.intensity = 0.8f;
+    engine.scene.addLight(sun); // let there be light
+
+    // point light:
+    bpast::PointLight lamp;
+    lamp.position = glm::vec3(0.0f, 2.0f, 0.0f);
+    lamp.color    = glm::vec3(1.0f, 0.6f, 0.3f);
+    lamp.range    = 10.0f;
+    engine.scene.addLight(lamp);
+    // pretty straightforward, dont you agree?
+
+
     // true once the window's close flag is set (either ESC or the lil X in the top corner usually)
     while (!engine.shouldClose()) {
 
