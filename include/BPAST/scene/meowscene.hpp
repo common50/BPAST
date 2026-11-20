@@ -28,7 +28,7 @@ public:
     void remove(int id);
     MeowObject& get(int meow) { return objects.at(meow); }
 
-    int addLight(const DirectionalLight& l);   // each returns its index, or -1 if full
+    int addLight(const DirectionalLight& l);
     int addLight(const PointLight& l);
     Light& light(int id) { return lights[id]; }
 
