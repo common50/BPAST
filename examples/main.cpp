@@ -54,7 +54,7 @@ int main() {
     bpast::Texture cooltexture("assets/textures/garden.jpg");
 
     // same as with rainbowcube, but here you give it a texture with the second parameter (true),
-    // and set the texture (cooltexture.id, which we created with bpast::meowxture previously)
+    // and set the texture (cooltexture.id, which we created with bpast::Texture previously)
     engine.scene.add("assets/models/meownd.obj", true, cooltexture.id);
 
     // another .obj, but this one we push to the side using glm
