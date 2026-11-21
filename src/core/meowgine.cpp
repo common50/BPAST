@@ -3,6 +3,18 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace bpast {
+
+namespace {
+void syncKittycat(meowscene& scene, const kittycat& who) {
+    if (who.body < 0) return;
+    auto it = scene.objects.find(who.body);
+    if (it == scene.objects.end()) return;
+
+    it->second.transform.position = who.camera.paws;
+    it->second.transform.rotation.y = -(who.camera.myaw + 90.0f);   // imma assume that the model faces -z at 0
+}
+}
+
 meowgine::meowgine(int meowidth, int meowght, const char* meowtle,
         const char* verityPath, const char* fragPath)
     : window(meowidth, meowght, meowtle) {
@@ -31,8 +43,8 @@ void meowgine::update() {
     if (input.keyPressed(window, GLFW_KEY_TAB)) input.toggleCursorLock(window);
     if (window.isKeyPressed(GLFW_KEY_ESCAPE)) window.requestClose();
 
-     camera.meowmeraMove(
-     window.isKeyPressed(GLFW_KEY_W),
+    player.move(
+        window.isKeyPressed(GLFW_KEY_W),
         window.isKeyPressed(GLFW_KEY_S),
         window.isKeyPressed(GLFW_KEY_A),
         window.isKeyPressed(GLFW_KEY_D),
@@ -45,8 +57,11 @@ void meowgine::update() {
     double meowsorX, meowsorY;
     window.getCursorPos(meowsorX, meowsorY);
     if (input.processInput((float)meowsorX, (float)meowsorY)) {
-        camera.chasingMice(input.deltaXmeowse, input.deltaYmeowse);
+        player.look(input.deltaXmeowse, input.deltaYmeowse);
     }
+
+    syncKittycat(scene, player);
+    for (auto& other : otherKittycats) syncKittycat(scene, *other);
 }
 
 void meowgine::draw() {
@@ -68,6 +83,20 @@ void meowgine::loopsoup() {
     while (!shouldClose()) {
         update();
         draw();
+    }
+}
+
+kittycat& meowgine::addPlayer(const std::string& name) {
+    otherKittycats.push_back(std::make_unique<kittycat>(name));
+    return *otherKittycats.back();
+}
+
+void meowgine::removePlayer(kittycat& p) {
+    for (auto it = otherKittycats.begin(); it != otherKittycats.end(); ++it) {
+        if (it->get() == &p) {
+            otherKittycats.erase(it);
+            return;
+        }
     }
 }
 }

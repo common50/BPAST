@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_library(bpast STATIC
+    src/core/kittycat.cpp
     src/core/meowgine.cpp
     src/core/meowindow.cpp
     src/core/meowmera.cpp

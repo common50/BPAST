@@ -15,7 +15,7 @@ namespace bpast {
 
 class meowscene {
 public:
-    std::map<int, MeowObject> objects;
+    std::map<int, meowObject> objects;
     std::vector<Light> lights;
     glm::vec3 ambient{0.05f};
 
@@ -26,7 +26,7 @@ public:
     // i don wanna guess pos
     int add(const char* soup, bool taxi = false, unsigned int biscuits = 0);
     void remove(int id);
-    MeowObject& get(int meow) { return objects.at(meow); }
+    meowObject& get(int meow) { return objects.at(meow); }
 
     int addLight(const DirectionalLight& l);
     int addLight(const PointLight& l);

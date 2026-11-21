@@ -21,6 +21,8 @@ extern "C" {
 
 int main() {
 
+    // INITIAL STUFF
+
     // k so first do Engine and put
     // window width, window height, window title,
     // and then the .vert and .frag shader paths or wtv they're called i dont remember
@@ -31,18 +33,27 @@ int main() {
     // versioj print for easier debug
     std::cout << "current version " << glGetString(GL_VERSION) << std::endl;
 
-    // this loads garden.jpg into a gpu texture, cooltexture.id would now be the raw GL texture handle
-    bpast::Texture cooltexture("assets/textures/garden.jpg");
+
+    // ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    // CAMERA STUFF
 
     // set the camera world-space position
     // (i'll fix the "paws" thing later)
     engine.camera.paws = glm::vec3(0.0f, 0.0f, 3.0f);
 
+
+    // ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    // MODEL LOADING STUFF
+
     // this takes an .obj, shoves it thru my parser, and uploads it to the GPU (VAO, VBO, EBO)
     // and then appends it to the scene
     engine.scene.add("assets/models/rainbowcube.obj");
 
-    // same as above, but here you give it a texture with the second parameter (true),
+    // this loads garden.jpg into a gpu texture, cooltexture.id would now be the raw GL texture handle
+    // do this before you actually use cooltexture.id ("well yeah, obviously..." you'll be surprised by how many ppl don't know)
+    bpast::Texture cooltexture("assets/textures/garden.jpg");
+
+    // same as with rainbowcube, but here you give it a texture with the second parameter (true),
     // and set the texture (cooltexture.id, which we created with bpast::meowxture previously)
     engine.scene.add("assets/models/meownd.obj", true, cooltexture.id);
 
@@ -54,7 +65,40 @@ int main() {
     // the underlying std::vector can reallocate and invalidate it
     // so don't do that (unless you want that, which i doubt)
 
+
+    // ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    // PLAYER STUFF
+
+    // now, let's say ur making a game
+    // you're gonna need to add a player, right?
+    // using BPAST, its super duper easy (imo)
+
+    // first do these
+    engine.player.settings.speed = 4.0f;                       // set walking speed
+    engine.player.camera.paws = glm::vec3(0.0f, 0.0f, 3.0f);   // same thing as engine.camera.paws
+
+    // now let's actually ADD a player
+    // i'll call him manipulator, since that's basically what i am
+    bpast::Player& manipulator = engine.addPlayer("manipulator");
+    // then we can set the player cam pos (different from the player pos, third person view exists...)
+    manipulator.camera.paws = glm::vec3(-2.0f, 0.0f, 0.0f);
+    // and we give the player a .obj for the body (im working on this, be patient)
+    manipulator.body = engine.scene.add("assets/models/mittest.obj");
+
+    // you can also utilize BPAST's addPlayer function to make yourself some new friends,
+    // since you probably don't have any if you're coding in your room all day
+    // with the addPlayer function, you can give your new friends any name and physical form you like!
+    // and they wont leave you either, unlike your irl friends! (at least until your program segfaults)
+
+
+    // ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    // LIGHT STUFF
+
     // to see, you'll need to add light
+
+    // it supports 2 different kinds of light as of right now:
+    // point light and directional light (go search em up or ask your little LLM if you dont know what they are)
+
     // directional light:
     bpast::DirectionalLight sun;
     sun.direction = glm::vec3(-0.3f, -1.0f, -0.2f);
@@ -70,6 +114,9 @@ int main() {
     engine.scene.addLight(lamp);
     // pretty straightforward, dont you agree?
 
+
+    // ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    // LOOP THINGY STUFF IDK
 
     // true once the window's close flag is set (either ESC or the lil X in the top corner usually)
     while (!engine.shouldClose()) {

@@ -14,5 +14,6 @@ namespace bpast {
     using Camera  = meowmera;
     using Shader  = meowder;
     using Window  = meowindow;
-    using SceneObject = MeowObject;
+    using SceneObject = meowObject;
+    using Player = kittycat;
 }

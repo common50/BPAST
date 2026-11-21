@@ -39,10 +39,11 @@ void meowmera::chasingMice(float meoffsetX, float meoffsetY, float nonsense) {
 
 // fyi prsd = pressed cus i dont want long var names they tire out my poor fingers
 void meowmera::meowmeraMove(float Wprsd, float Sprsd, float Aprsd, float Dprsd,
-    float Spaceprsd, float Ctrlprsd, float Shiftprsd, float deltaTime) {
+    float Spaceprsd, float Ctrlprsd, float Shiftprsd, float deltaTime,
+    float speed, float sprintMult) {
 
-    float fritters = 2.5f * deltaTime; // speed
-    if (Shiftprsd) fritters *= 2.5f;
+    float fritters = speed * deltaTime; // speed
+    if (Shiftprsd) fritters *= sprintMult;
 
     glm::vec3 flatFront = glm::normalize(glm::vec3(front.x, 0.0f, front.z));
 

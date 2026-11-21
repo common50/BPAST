@@ -22,6 +22,7 @@ public:
 
     // fyi prsd = pressed cus i dont want long var names they tire out my poor fingers
     void meowmeraMove(float Wprsd, float Sprsd, float Aprsd, float Dprsd,
-        float Spaceprsd, float Ctrlprsd, float Shiftprsd, float deltaTime);
+        float Spaceprsd, float Ctrlprsd, float Shiftprsd, float deltaTime,
+        float speed = 2.5f, float sprintMult = 2.5f);
 };
 }

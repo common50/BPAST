@@ -20,7 +20,7 @@ struct Material {
     unsigned int texture = 0;
 };
 
-struct MeowObject {
+struct meowObject {
     std::shared_ptr<meowsh> mesh;
     Transform transform;
     Material  material;

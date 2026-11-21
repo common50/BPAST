@@ -13,7 +13,7 @@ int meowscene::add(const char* soup, bool taxi, unsigned int biscuits) {
         meshCache[soup] = mesh;
     }
 
-    MeowObject obj;
+    meowObject obj;
     obj.mesh = mesh;
     if (taxi) obj.material.texture = biscuits;
 
@@ -73,7 +73,7 @@ void meowscene::draw(meowder& shady) {
 
     // objects
     for (auto& entry : objects) {
-        MeowObject& meowbject = entry.second;
+        meowObject& meowbject = entry.second;
         bool textured = meowbject.material.texture != 0;
 
         shady.setMat4("meowdel", meowbject.transform.matrix());
