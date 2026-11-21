@@ -61,9 +61,8 @@ int main() {
     int trythisangle = engine.scene.add("assets/models/mittest.obj");
     engine.scene.get(trythisangle).transform.position = glm::vec3(2.0f, 0.0f, 0.0f);
 
-    // IMPORTANT: don't hold a get() reference across more add() calls
-    // the underlying std::vector can reallocate and invalidate it
-    // so don't do that (unless you want that, which i doubt)
+    // big news for the BPAST community (which consists of one person, me) that changed it irreversibly:
+    // a get() reference now STAYS VALID until you remove() that object
 
 
     // ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
