@@ -2,15 +2,21 @@
 #include <glad/glad.h>
 #include <iostream>
 #include <string>
+#include <utility>
 
 namespace bpast {
 
+meowscene::meowscene() : meshCache(std::make_shared<meowshCache>()) {}
+
+meowscene::meowscene(std::shared_ptr<meowshCache> sharedCache)
+    : meshCache(std::move(sharedCache)) {}
+
 // i don wanna guess pos
 int meowscene::add(const char* soup, bool taxi, unsigned int biscuits) {
-    std::shared_ptr<meowsh> mesh = meshCache[soup].lock();
+    std::shared_ptr<meowsh> mesh = (*meshCache)[soup].lock();
     if (!mesh) {
         mesh = std::make_shared<meowsh>(soup);
-        meshCache[soup] = mesh;
+        (*meshCache)[soup] = mesh;
     }
 
     meowObject obj;
@@ -29,7 +35,7 @@ void meowscene::remove(int id) {
 namespace {
 int pushLight(std::vector<Light>& lights, const Light& l) {
     if ((int)lights.size() >= kMaxLights) {
-        std::cerr << "noooo too many lights, max is only like " << kMaxLights << std::endl;
+        std::cerr << "too many lights, max is " << kMaxLights << std::endl;
         return -1;
     }
     lights.push_back(l);

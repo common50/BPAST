@@ -118,6 +118,47 @@ int main() {
 
 
     // ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    // SCENE STUFF
+
+    // you'll probably want more than once scene, right?
+    // with BPAST, it's easier than rubbing in a watermelon with butter
+
+    // first, we make a new scene. let's call it "latrine" (you'll see...)
+    // so basically we just call createScene and give it a name.
+    bpast::meowscene& latrineScene = engine.createScene("latrineScene");
+    // and yes, it is partially because it rhymes
+
+    // then we add the color for the skybox (i'm still working on a proper skybox, just hold on)
+    latrineScene.clearColor = glm::vec3(0.1f, 0.1f, 0.15f);
+
+    // we can add an .obj to our scene:
+    // first set a texture,
+    bpast::Texture toiletTex("assets/textures/lavatory.jpg");
+    // then we add the .obj,
+    int lavatory = latrineScene.add("assets/models/meownd.obj", true, toiletTex.id);
+    // and move it a little!
+    latrineScene.get(lavatory).transform.position = glm::vec3(0.0f, 0.0f, -2.0f);
+
+
+    // and finally add light (like shown above)
+    bpast::DirectionalLight bathroomLight;
+    bathroomLight.direction = glm::vec3(-0.5f, -1.0f, -0.3f);
+    latrineScene.addLight(bathroomLight);
+
+    // note that the other scene (with all the other objects, which i demonstrated above)
+    // are in the "default" scene, which comes automatically
+    // lavatory only appears in the latrineScene, which we just made
+
+    // i put the input for switching between scenes right under engine.update
+    // (at the bottom in   while (!engine.shouldClose)   i think)
+    // so press 1 to go to default scene and 2 to go to latrine scene
+
+    // so now, instead of making a scene about someone not using correct identation when making a PR
+    // for some software you don't even use, you can make a scene using BPAST!
+    // and it's a lot less time consuming too
+
+
+    // ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     // LOOP THINGY STUFF IDK
 
     // true once the window's close flag is set (either ESC or the lil X in the top corner usually)
@@ -125,6 +166,10 @@ int main() {
 
         // polls input, advances delta time, and handles input
         engine.update();
+
+        // todo: add explanation
+        if (engine.input.keyPressed(engine.window, GLFW_KEY_1)) engine.setActiveScene("default");
+        if (engine.input.keyPressed(engine.window, GLFW_KEY_2)) engine.setActiveScene("latrineScene");
 
         // clears, sets view/projection and light uniforms, draws every scene object, swaps buffers
         engine.draw();

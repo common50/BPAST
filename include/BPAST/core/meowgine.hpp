@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -28,14 +29,16 @@ public:
     meowmera& camera = player.camera;
     meowse input;
     meowtime timing;
-    meowscene scene;
+    std::shared_ptr<meowshCache> sharedMeowshCache = std::make_shared<meowshCache>();
+    meowscene scene{sharedMeowshCache};
+    meowscene* activeScene = &scene;
+    std::map<std::string, std::unique_ptr<meowscene>> extraScenes;
     std::unique_ptr<meowder> shader;
     std::vector<std::unique_ptr<kittycat>> otherKittycats;
 
     float fovDeg = 45.0f;
     float nearPlane = 0.1f;
     float farPlane = 100.0f;
-    glm::vec3 clearColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
     meowgine(int meowidth, int meowght, const char* meowtle,
             const char* verityPath, const char* fragPath);
@@ -54,5 +57,13 @@ public:
     void removePlayer(kittycat& p);
     kittycat& addKittycat(const std::string& name) { return addPlayer(name); }
     void removeKittycat(kittycat& p) { removePlayer(p); }
+
+    // was lowk too lazy to come up with better names
+    meowscene& createScene(const std::string& name);
+    meowscene* findScene(const std::string& name);
+    void setActiveScene(meowscene& scene);
+    void setActiveScene(const std::string& name);
+    void removeScene(const std::string& name);
+    meowscene& getActiveScene() { return *activeScene; }
 };
 }

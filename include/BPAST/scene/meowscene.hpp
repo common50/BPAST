@@ -11,6 +11,8 @@
 
 namespace bpast {
 
+using meowshCache = std::unordered_map<std::string, std::weak_ptr<meowsh>>;
+
 // idrc anymore
 
 class meowscene {
@@ -18,8 +20,10 @@ public:
     std::map<int, meowObject> objects;
     std::vector<Light> lights;
     glm::vec3 ambient{0.05f};
+    glm::vec3 clearColor{1.0f};
 
-    meowscene() = default;
+    meowscene();
+    explicit meowscene(std::shared_ptr<meowshCache> sharedMeowsheCache);
     meowscene(const meowscene&) = delete;
     meowscene& operator=(const meowscene&) = delete;
 
@@ -35,7 +39,7 @@ public:
     void draw(meowder& shady);
 
 private:
-    std::unordered_map<std::string, std::weak_ptr<meowsh>> meshCache;
+    std::shared_ptr<meowshCache> meshCache;
     int nextId = 0;
 };
 

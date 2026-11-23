@@ -1,17 +1,18 @@
 #include <BPAST/core/meowgine.hpp>
 #include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
 
 namespace bpast {
 
 namespace {
-void syncKittycat(meowscene& scene, const kittycat& who) {
+void syncBody(meowscene& scene, const kittycat& who) {
     if (who.body < 0) return;
     auto it = scene.objects.find(who.body);
     if (it == scene.objects.end()) return;
 
     it->second.transform.position = who.camera.paws;
-    it->second.transform.rotation.y = -(who.camera.myaw + 90.0f);   // imma assume that the model faces -z at 0
+    it->second.transform.rotation.y = -(who.camera.myaw + 90.0f);
 }
 }
 
@@ -60,12 +61,14 @@ void meowgine::update() {
         player.look(input.deltaXmeowse, input.deltaYmeowse);
     }
 
-    syncKittycat(scene, player);
-    for (auto& other : otherKittycats) syncKittycat(scene, *other);
+    syncBody(*activeScene, player);
+    for (auto& other : otherKittycats) syncBody(*activeScene, *other);
 }
 
 void meowgine::draw() {
-    glClearColor(clearColor.r, clearColor.g, clearColor.b, 1.0f);
+    meowscene& scene = *activeScene;
+
+    glClearColor(scene.clearColor.r, scene.clearColor.g, scene.clearColor.b, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     shader->use();
@@ -98,5 +101,41 @@ void meowgine::removePlayer(kittycat& p) {
             return;
         }
     }
+}
+
+meowscene* meowgine::findScene(const std::string& name) {
+    if (name == "default") return &scene;
+    auto it = extraScenes.find(name);
+    return it == extraScenes.end() ? nullptr : it->second.get();
+}
+
+meowscene& meowgine::createScene(const std::string& name) {
+    if (meowscene* existing = findScene(name)) {
+        std::cerr << "this scene alr exists: " << name << std::endl;
+        return *existing;
+    }
+    std::unique_ptr<meowscene>& slot = extraScenes[name];
+    slot = std::make_unique<meowscene>(sharedMeowshCache);
+    return *slot;
+}
+
+void meowgine::setActiveScene(meowscene& scene) {
+    activeScene = &scene;
+}
+
+void meowgine::setActiveScene(const std::string& name) {
+    meowscene* found = findScene(name);
+    if (!found) {
+        std::cerr << "no scene named " << name << ", check ur spelling" << std::endl;
+        return;
+    }
+    activeScene = found;
+}
+
+void meowgine::removeScene(const std::string& name) {
+    auto it = extraScenes.find(name);
+    if (it == extraScenes.end()) return;
+    if (activeScene == it->second.get()) activeScene = &scene;
+    extraScenes.erase(it);
 }
 }
