@@ -61,14 +61,17 @@ int main() {
     int trythisangle = engine.scene.add("assets/models/mittest.obj");
     engine.scene.get(trythisangle).transform.position = glm::vec3(2.0f, 0.0f, 0.0f);
 
-    // big news for the BPAST community (which consists of one person, me) that changed it irreversibly:
+    // shocking news for the BPAST community (which consists of one person: me) that changed it irreversibly:
     // a get() reference now STAYS VALID until you remove() that object
 
 
     // ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     // PLAYER STUFF
 
-    // now, let's say ur making a game
+    // [I MIGHT REMOVE THIS AND ADD IT AS LIKE AN EXTENSION, ]
+    // [SINCE BPAST IS SUPPOSED TO BE A GRAPHICS ENGINE, NOT A GAME ENGINE!]
+
+    // now, let's say you're making a game
     // you're gonna need to add a player, right?
     // using BPAST, its super duper easy (imo)
 
