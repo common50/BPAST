@@ -58,8 +58,8 @@ int main() {
     engine.scene.add("assets/models/meownd.obj", true, cooltexture.id);
 
     // another .obj, but this one we push to the side using glm
-    int trythisangle = engine.scene.add("assets/models/mittest.obj");
-    engine.scene.get(trythisangle).transform.position = glm::vec3(2.0f, 0.0f, 0.0f);
+    int dorito = engine.scene.add("assets/models/mittest.obj");
+    engine.scene.get(dorito).transform.position = glm::vec3(2.0f, 0.0f, 0.0f);
 
     // shocking news for the BPAST community (which consists of one person: me) that changed it irreversibly:
     // a get() reference now STAYS VALID until you remove() that object
@@ -118,6 +118,23 @@ int main() {
 
 
     // ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    // SKYBOX STUFF
+
+    // each scene can have its own skybox. this one doesn't need any image files:
+    // the colors are top, horizon, and bottom, in that order.
+    engine.scene.setSkyGradient(
+        glm::vec3(0.10f, 0.25f, 0.55f),
+        glm::vec3(0.65f, 0.80f, 0.95f),
+        glm::vec3(0.05f, 0.05f, 0.10f));
+
+    // for an image skybox, put six faces named right/left/top/bottom/front/back
+    // in one folder, then use setSky("that/folder") instead.
+    // engine.scene.setSky("assets/textures/skybox");
+
+    // clearSky() removes it again and leaves clearColor as the background.
+
+
+    // ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     // SCENE STUFF
 
     // you'll probably want more than once scene, right?
@@ -128,8 +145,13 @@ int main() {
     bpast::meowscene& latrineScene = engine.createScene("latrineScene");
     // and yes, it is partially because it rhymes
 
-    // then we add the color for the skybox (i'm still working on a proper skybox, just hold on)
+    // then we add the clear color used when there's no skybox
     latrineScene.clearColor = glm::vec3(0.1f, 0.1f, 0.15f);
+    // skies are per scene, so this one gets its own skybox too
+    latrineScene.setSkyGradient(
+        glm::vec3(0.35f, 0.15f, 0.50f),
+        glm::vec3(0.85f, 0.45f, 0.35f),
+        glm::vec3(0.05f, 0.02f, 0.08f));
 
     // we can add an .obj to our scene:
     // first set a texture,

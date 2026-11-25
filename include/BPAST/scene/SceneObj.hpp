@@ -15,15 +15,18 @@ struct Transform {
     glm::mat4 matrix() const;
 };
 
-struct Material {
+struct meowterial {
+    // imma just hardcode some bullshit and see what happens lowkey
     glm::vec3 color{1.0f};
     unsigned int texture = 0;
+    float specular  = 0.5f;
+    float shiny = 32.0f;
 };
 
 struct meowObject {
     std::shared_ptr<meowsh> mesh;
     Transform transform;
-    Material  material;
+    meowterial  material;
 };
 
 }

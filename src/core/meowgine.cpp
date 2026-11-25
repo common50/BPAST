@@ -66,18 +66,22 @@ void meowgine::update() {
 }
 
 void meowgine::draw() {
-    meowscene& scene = *activeScene;
+    meowscene& current = *activeScene;
 
-    glClearColor(scene.clearColor.r, scene.clearColor.g, scene.clearColor.b, 1.0f);
+    glClearColor(current.clearColor.r, current.clearColor.g, current.clearColor.b, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    glm::mat4 view = camera.getViewMatrix();
+    glm::mat4 projection = glm::perspective(glm::radians(fovDeg), window.aspectRatio(), nearPlane, farPlane);
+
     shader->use();
-    shader->setMat4("miew", camera.getViewMatrix());
-    shader->setMat4("meowjection", glm::perspective(glm::radians(fovDeg), window.aspectRatio(), nearPlane, farPlane));
+    shader->setMat4("miew", view);
+    shader->setMat4("meowjection", projection);
 
     shader->setVec3("viewPaws", camera.paws);
 
-    scene.draw(*shader);
+    current.draw(*shader);
+    current.drawSky(view, projection);
 
     window.swapBuffers();
 }

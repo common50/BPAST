@@ -8,12 +8,11 @@ out vec4 FragColor;
 uniform sampler2D meowtex;
 uniform bool huhTexture;
 uniform vec3 materialColor;
+uniform float meowterialSpec;
+uniform float meowterialShiny;
 uniform vec3 viewPaws;
 
 #define MAX_LIGHTS 8
-
-// i legit dont know how .frag or .vert work
-// but who cares, as long as it works...
 
 struct Light {
     int   type;
@@ -28,6 +27,9 @@ uniform Light lights[MAX_LIGHTS];
 uniform int   lightCount;
 uniform vec3  sceneAmbient;
 
+
+// i asked a more qualified person to make me the frag and vert shader
+// idk what this is all about tbh
 void main() {
     vec3 baseColor = (huhTexture ? texture(meowtex, meowtexCoord).rgb : meowtexColor) * materialColor;
 
@@ -56,10 +58,10 @@ void main() {
         float spec = 0.0;
         if (diff > 0.0) {
             vec3 reflectDir = reflect(-toLight, norm);
-            spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
+            spec = pow(max(dot(viewDir, reflectDir), 0.0), max(meowterialShiny, 1.0));
         }
 
-        result += lightCol * (diff + 0.5 * spec);
+        result += lightCol * (diff + meowterialSpec * spec);
     }
 
     FragColor = vec4(result * baseColor, 1.0);

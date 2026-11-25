@@ -35,7 +35,7 @@ void meowscene::remove(int id) {
 namespace {
 int pushLight(std::vector<Light>& lights, const Light& l) {
     if ((int)lights.size() >= kMaxLights) {
-        std::cerr << "too many lights, max is " << kMaxLights << std::endl;
+        std::cerr << "too many lights, max is only like" << kMaxLights << std::endl;
         return -1;
     }
     lights.push_back(l);
@@ -62,13 +62,29 @@ int meowscene::addLight(const PointLight& l) {
     return pushLight(lights, out);
 }
 
+void meowscene::setSky(const std::string& folder, const std::string& ext) {
+    sky = std::make_unique<meowbox>(folder, ext);
+}
+
+void meowscene::setSkyGradient(const glm::vec3& top, const glm::vec3& horizon, const glm::vec3& bottom) {
+    sky = std::make_unique<meowbox>(top, horizon, bottom);
+}
+
+void meowscene::clearSky() {
+    sky.reset();
+}
+
+void meowscene::drawSky(const glm::mat4& view, const glm::mat4& projection) const {
+    if (sky) sky->draw(view, projection);
+}
+
 void meowscene::draw(meowder& shady) {
     // lights
     shady.setVec3("sceneAmbient", ambient);
     shady.setInt("lightCount", (int)lights.size());
-    for (size_t i = 0; i < lights.size(); i++) {
-        const Light& l = lights[i];
-        std::string base = "lights[" + std::to_string(i) + "].";
+    for (size_t muffins = 0; muffins < lights.size(); muffins++) {
+        const Light& l = lights[muffins];
+        std::string base = "lights[" + std::to_string(muffins) + "].";
         shady.setInt(base + "type", (int)l.type);
         shady.setVec3(base + "position", l.position);
         shady.setVec3(base + "direction", glm::normalize(l.direction));
@@ -84,6 +100,8 @@ void meowscene::draw(meowder& shady) {
 
         shady.setMat4("meowdel", meowbject.transform.matrix());
         shady.setVec3("materialColor", meowbject.material.color);
+        shady.setFloat("meowterialSpec", meowbject.material.specular);
+        shady.setFloat("meowterialShiny", meowbject.material.shiny);
         shady.setBool("huhTexture", textured);
         if (textured) {
             glActiveTexture(GL_TEXTURE0);

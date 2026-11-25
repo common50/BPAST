@@ -12,6 +12,7 @@ add_library(bpast STATIC
     src/core/meowmera.cpp
     src/core/meowse.cpp
     src/core/meowtime.cpp
+    src/graphics/meowbox.cpp
     src/graphics/meowder.cpp
     src/graphics/meowsh.cpp
     src/graphics/meowxture.cpp
